@@ -78,12 +78,12 @@ function App(props) {
 
   return (
     <div className="all">
-      <CardDeck className = "deck"style={{margin:25}}>
+      <CardDeck className = "deck"style={{}}>
         <Card
           bg={"secondary"}
           text={"white"}
           className="text-center"
-          style={{ margin: 10 }}
+          style={{  }}
         >
           <Card.Body>
             <Card.Title>Cases</Card.Title>
@@ -97,7 +97,7 @@ function App(props) {
           bg={"danger"}
           text={"white"}
           className="text-center"
-          style={{ margin: 10 }}
+          style={{ }}
         >
           <Card.Body>
             <Card.Title>Deaths</Card.Title>
@@ -111,7 +111,7 @@ function App(props) {
           bg={"success"}
           text={"white"}
           className="text-center"
-          style={{ margin: 10 }}
+          style={{ }}
         >
           <Card.Body>
             <Card.Title>Recovered</Card.Title>

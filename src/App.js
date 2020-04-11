@@ -62,7 +62,7 @@ function App(props) {
 
   function handleChange(col) {
     type === "asc" ? setType("desc") : setType("asc");
-
+   
     setResults(orderBy(results, [col], [type]));
   }
 
@@ -74,6 +74,9 @@ function App(props) {
 
   }
 
+  function submitHandler(e) {
+    e.preventDefault();
+}
   const image = <img src={sort} alt="Logo" className="image" />;
 
   return (
@@ -122,7 +125,7 @@ function App(props) {
           </Card.Footer>
         </Card>
       </CardDeck>
-      <form style={{textAlign:"center"}}>
+      <form onSubmit={submitHandler}style={{textAlign:"center"}}>
         <label>
           Search:
           <input onChange={handleSearch} type="text" name="searching" value = {search}  />

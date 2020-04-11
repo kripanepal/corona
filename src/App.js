@@ -42,7 +42,7 @@ function App(props) {
       isNewDeath = "danger";
     }
     let isNewCases = "";
-    if (data.todayDeaths !== 0) {
+    if (data.todayCases !== 0) {
       isNewCases = "casesNew";
     }
 
@@ -78,7 +78,7 @@ function App(props) {
 
   return (
     <div className="all">
-      <CardDeck className = "deck"style={{}}>
+      <CardDeck className = "deck">
         <Card
           bg={"secondary"}
           text={"white"}
@@ -131,12 +131,13 @@ function App(props) {
        
       </form>
 
-      <Table
+      <Table 
         className="table"
         striped
         bordered
         hover
         variant="dark"
+        responsive 
         style={{ maxWidth: 900 }}
       >
         <thead>

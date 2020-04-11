@@ -1,0 +1,27 @@
+.table
+{
+  margin: 0 auto;  
+  text-align: center; 
+}
+
+.country
+{
+  text-align: left;
+  color: aqua;
+ 
+}
+.danger
+{
+  background-color: red;
+}
+.casesNew
+{
+  background-color: salmon;
+}
+
+.image
+{
+  width:18px;
+  position:relative;
+  left:20px;
+}

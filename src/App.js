@@ -38,24 +38,42 @@ function App(props) {
   const countries = results.map((data,i) => {
 
     let isNewDeath = "";
+    let deathSign =""
     if (data.todayDeaths !== 0) {
-      isNewDeath = "danger";
+       isNewDeath = "danger";
+      deathSign ="+"
     }
     let isNewCases = "";
+    let casesSign = "+"
     if (data.todayCases !== 0) {
+       casesSign = "+"
       isNewCases = "casesNew";
     }
 
+   
+
     return (
       <tr key ={i} > 
-        <td className="country">{data.country} </td>
+        <td className="country">
+          <span style={{height:`100%`}}><img src = {data.countryInfo.flag} alt="flag" width="20px"/>  </span>
+        
+         {data.country} 
+        
+        </td>
         <td>  <NumberFormat value={data.cases} displayType={'text'} thousandSeparator={true}/></td>
         <td className="datas"> <NumberFormat value={data.deaths} displayType={'text'} thousandSeparator={true}/></td>
         <td className="datas"> <NumberFormat value={data.recovered} displayType={'text'} thousandSeparator={true}/></td>
-        <td className={isNewCases}> <NumberFormat value={data.todayCases} displayType={'text'} thousandSeparator={true}/></td>
-        <td className={isNewDeath}> <NumberFormat value={data.todayDeaths} displayType={'text'} thousandSeparator={true}/></td>
+        <td className={isNewCases}>{casesSign}
+          
+           <NumberFormat value={data.todayCases} displayType={'text'} thousandSeparator={true}/></td>
+        <td className={isNewDeath}> {deathSign}<NumberFormat value={data.todayDeaths} displayType={'text'} thousandSeparator={true}/></td>
         <td className="datas"> <NumberFormat value={data.active} displayType={'text'} thousandSeparator={true}/></td>
         <td className="datas"> <NumberFormat value={data.critical} displayType={'text'} thousandSeparator={true}/></td>
+
+
+        <td className="datas"> <NumberFormat value={data.casesPerOneMillion} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas"> <NumberFormat value={data.deathsPerOneMillion} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas"> <NumberFormat value={data.testsPerOneMillion} displayType={'text'} thousandSeparator={true}/></td>
       </tr>
     );
   });
@@ -151,6 +169,7 @@ function App(props) {
               }}
             >
               Country
+              
               {image}
             </th>
             <th
@@ -207,6 +226,27 @@ function App(props) {
               }}
             >
               Critical{image}
+            </th>
+            <th
+              onClick={() => {
+                handleChange("critical");
+              }}
+            >
+              Cases/1M{image}
+            </th>
+            <th
+              onClick={() => {
+                handleChange("critical");
+              }}
+            >
+              Deaths/1M{image}
+            </th>
+            <th
+              onClick={() => {
+                handleChange("critical");
+              }}
+            >
+              Tests/1M{image}
             </th>
           </tr>
         </thead>

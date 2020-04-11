@@ -29,11 +29,11 @@
 }
 .danger
 {
-  background-color: red;
+  color: rgb(218, 67, 67);
 }
 .casesNew
 {
-  background-color: salmon;
+  color:rgb(250, 129, 129);
 }
 
 .image

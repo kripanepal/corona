@@ -42,3 +42,12 @@
   position:relative;
   left:20px;
 }
+
+Table { 
+  table-layout:fixed;
+}
+
+td,tr { 
+  
+  word-wrap: break-word;
+}

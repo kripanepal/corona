@@ -6,12 +6,15 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import Table from "react-bootstrap/Table";
 import orderBy from "lodash/orderBy";
-import sort from './sort.png'; 
+import sort from "./sort.png";
 
-function App() {
+
+function App(props) {
   const [latest, setLatest] = useState([]);
   const [results, setResults] = useState([]);
+  const [finalResults,setFinalResults] = useState([]);
   const [type, setType] = useState("desc");
+  var [search,setSearch] = useState("");
 
   useEffect(() => {
     axios
@@ -22,29 +25,30 @@ function App() {
 
       .then((res) => {
         setLatest(res[0].data);
-        setResults(orderBy(res[1].data, ["cases"], ["desc"]));
+        setResults(orderBy(res[1].data, ["cases"], ["desc"]))
+        setFinalResults(orderBy(res[1].data, ["cases"], ["desc"]))
        
       });
   }, []);
 
   const date = new Date(parseInt(latest.updated));
   const lastUpdated = date.toString();
- 
-  const countries = results.map((data, i) => {
+
+  const countries = results.map((data,i) => {
+
     let isNewDeath = "";
-    if(data.todayDeaths!=0)
-    {
-      isNewDeath = "danger"
+    if (data.todayDeaths !== 0) {
+      isNewDeath = "danger";
     }
     let isNewCases = "";
-    if(data.todayDeaths!=0)
-    {
-      isNewCases = "casesNew"
+    if (data.todayDeaths !== 0) {
+      isNewCases = "casesNew";
     }
+
     return (
-      <tr>
+      <tr key ={i} > 
         <td className="country">{data.country} </td>
-        <td > {data.cases}</td>
+        <td> {data.cases}</td>
         <td className="datas">{data.deaths}</td>
         <td className="datas">{data.recovered}</td>
         <td className={isNewCases}>{data.todayCases}</td>
@@ -56,19 +60,24 @@ function App() {
   });
 
   function handleChange(col) {
-    
-    type==="asc"?setType("desc"):setType("asc")
+    type === "asc" ? setType("desc") : setType("asc");
 
     setResults(orderBy(results, [col], [type]));
   }
 
-  const image =   <img src={sort} alt="Logo" className= "image"/>;
+  function handleSearch(event)
+  {
+      setSearch(event.target.value)
+      const filtered = finalResults.filter(each => ((each.country).toUpperCase()).startsWith((event.target.value).toUpperCase()));
+      setResults(filtered);
 
+  }
+
+  const image = <img src={sort} alt="Logo" className="image" />;
 
   return (
     <div>
-      
-      <CardDeck>
+      <CardDeck style={{margin:25}}>
         <Card
           bg={"secondary"}
           text={"white"}
@@ -112,6 +121,14 @@ function App() {
           </Card.Footer>
         </Card>
       </CardDeck>
+      <form style={{textAlign:"center"}}>
+        <label>
+          Search:
+          <input onChange={handleSearch} type="text" name="searching" value = {search}  />
+         
+        </label>
+       
+      </form>
 
       <Table
         className="table"
@@ -119,7 +136,7 @@ function App() {
         bordered
         hover
         variant="dark"
-        style={{ maxWidth: 1000 }}
+        style={{ maxWidth: 900 }}
       >
         <thead>
           <tr>
@@ -129,7 +146,7 @@ function App() {
               }}
             >
               Country
-            {image}
+              {image}
             </th>
             <th
               onClick={() => {
@@ -185,7 +202,6 @@ function App() {
               }}
             >
               Critical{image}
-              
             </th>
           </tr>
         </thead>

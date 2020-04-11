@@ -2,8 +2,23 @@
 {
   margin: 0 auto;  
   text-align: center; 
- 
+
 }
+
+.deck
+{
+  margin:auto;
+  position: relative;
+  left:0%;
+  right:15%;
+}
+
+.all
+{
+  background-color: burlywood;
+  text-align: center;
+}
+
 
 .country
 {

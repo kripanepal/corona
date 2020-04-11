@@ -7,6 +7,7 @@ import axios from "axios";
 import Table from "react-bootstrap/Table";
 import orderBy from "lodash/orderBy";
 import sort from "./sort.png";
+import NumberFormat from 'react-number-format';
 
 
 function App(props) {
@@ -48,13 +49,13 @@ function App(props) {
     return (
       <tr key ={i} > 
         <td className="country">{data.country} </td>
-        <td> {data.cases}</td>
-        <td className="datas">{data.deaths}</td>
-        <td className="datas">{data.recovered}</td>
-        <td className={isNewCases}>{data.todayCases}</td>
-        <td className={isNewDeath}>{data.todayDeaths}</td>
-        <td className="datas">{data.active}</td>
-        <td className="datas">{data.critical}</td>
+        <td>  <NumberFormat value={data.cases} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas"> <NumberFormat value={data.deaths} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas"> <NumberFormat value={data.recovered} displayType={'text'} thousandSeparator={true}/></td>
+        <td className={isNewCases}> <NumberFormat value={data.todayCases} displayType={'text'} thousandSeparator={true}/></td>
+        <td className={isNewDeath}> <NumberFormat value={data.todayDeaths} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas"> <NumberFormat value={data.active} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas"> <NumberFormat value={data.critical} displayType={'text'} thousandSeparator={true}/></td>
       </tr>
     );
   });
@@ -76,8 +77,8 @@ function App(props) {
   const image = <img src={sort} alt="Logo" className="image" />;
 
   return (
-    <div>
-      <CardDeck style={{margin:25}}>
+    <div className="all">
+      <CardDeck className = "deck"style={{margin:25}}>
         <Card
           bg={"secondary"}
           text={"white"}
@@ -86,10 +87,10 @@ function App(props) {
         >
           <Card.Body>
             <Card.Title>Cases</Card.Title>
-            <Card.Text>{latest.cases}</Card.Text>
+            <Card.Text><NumberFormat value={latest.cases} displayType={'text'} thousandSeparator={true}/></Card.Text>
           </Card.Body>
           <Card.Footer>
-            <small>Last updated: {lastUpdated}}</small>
+            <small>Last updated: {lastUpdated}</small>
           </Card.Footer>
         </Card>
         <Card
@@ -100,7 +101,7 @@ function App(props) {
         >
           <Card.Body>
             <Card.Title>Deaths</Card.Title>
-            <Card.Text>{latest.deaths}</Card.Text>
+            <Card.Text> <NumberFormat value={latest.deaths} displayType={'text'} thousandSeparator={true}/></Card.Text>
           </Card.Body>
           <Card.Footer>
             <small>Last updated: {lastUpdated}}</small>
@@ -114,7 +115,7 @@ function App(props) {
         >
           <Card.Body>
             <Card.Title>Recovered</Card.Title>
-            <Card.Text>{latest.recovered}</Card.Text>
+            <Card.Text> <NumberFormat value={latest.recovered} displayType={'text'} thousandSeparator={true}/></Card.Text>
           </Card.Body>
           <Card.Footer>
             <small>Last updated: {lastUpdated}}</small>

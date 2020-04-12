@@ -5,11 +5,6 @@
 
 }
 
-.deck
-{
-  
-
-}
 
 .all
 {
@@ -42,5 +37,13 @@
   position:relative;
   left:20px;
 }
+
+.graph
+{
+  position: relative;
+  left: -4%;
+
+}
+
 
 

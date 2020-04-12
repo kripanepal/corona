@@ -7,15 +7,17 @@ import axios from "axios";
 import Table from "react-bootstrap/Table";
 import orderBy from "lodash/orderBy";
 import sort from "./sort.png";
-import NumberFormat from 'react-number-format';
-
+import NumberFormat from "react-number-format";
+import Popup from "./popup";
 
 function App(props) {
   const [latest, setLatest] = useState([]);
   const [results, setResults] = useState([]);
-  const [finalResults,setFinalResults] = useState([]);
+  const [finalResults, setFinalResults] = useState([]);
   const [type, setType] = useState("desc");
-  var [search,setSearch] = useState("");
+  var [search, setSearch] = useState("");
+  var [seen, setSeen] = useState(false);
+
 
   useEffect(() => {
     axios
@@ -26,139 +28,223 @@ function App(props) {
 
       .then((res) => {
         setLatest(res[0].data);
-        setResults(orderBy(res[1].data, ["cases"], ["desc"]))
-        setFinalResults(orderBy(res[1].data, ["cases"], ["desc"]))
-       
+        setResults(orderBy(res[1].data, ["cases"], ["desc"]));
+        setFinalResults(orderBy(res[1].data, ["cases"], ["desc"]));
       });
   }, []);
+
+  function togglePop() {
+    setSeen(!{ seen });
+  }
 
   const date = new Date(parseInt(latest.updated));
   const lastUpdated = date.toString();
 
-  const countries = results.map((data,i) => {
-
+  const countries = results.map((data, i) => {
     let isNewDeath = "";
-    let deathSign =""
+    let deathSign = "";
     if (data.todayDeaths !== 0) {
-       isNewDeath = "danger";
-      deathSign ="+"
+      isNewDeath = "danger";
+      deathSign = "+";
     }
     let isNewCases = "";
-    let casesSign = "+"
+    let casesSign = "+";
     if (data.todayCases !== 0) {
-       casesSign = "+"
+      casesSign = "+";
       isNewCases = "casesNew";
     }
 
-   
-
     return (
-      <tr key ={i} > 
+      <tr key={i}>
         <td className="country">
-          <span style={{height:`100%`}}><img src = {data.countryInfo.flag} alt="flag" width="20px"/>  </span>
-        
-         {data.country} 
-        
-        </td>
-        <td>  <NumberFormat value={data.cases} displayType={'text'} thousandSeparator={true}/></td>
-        <td className="datas"> <NumberFormat value={data.deaths} displayType={'text'} thousandSeparator={true}/></td>
-        <td className="datas"> <NumberFormat value={data.recovered} displayType={'text'} thousandSeparator={true}/></td>
-        <td className={isNewCases}>{casesSign}
+          <span style={{ height: `100%` }}>
+            <img src={data.countryInfo.flag} alt="flag" width="20px" />{" "}
+          </span>
+          <span>
+            <Popup name = {data.country}/>
           
-           <NumberFormat value={data.todayCases} displayType={'text'} thousandSeparator={true}/></td>
-        <td className={isNewDeath}> {deathSign}<NumberFormat value={data.todayDeaths} displayType={'text'} thousandSeparator={true}/></td>
-        <td className="datas"> <NumberFormat value={data.active} displayType={'text'} thousandSeparator={true}/></td>
-        <td className="datas"> <NumberFormat value={data.critical} displayType={'text'} thousandSeparator={true}/></td>
+          </span>
+          
+        </td>
+        <td>
+          {" "}
+          <NumberFormat
+            value={data.cases}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.deaths}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.recovered}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className={isNewCases}>
+          {casesSign}
 
+          <NumberFormat
+            value={data.todayCases}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className={isNewDeath}>
+          {" "}
+          {deathSign}
+          <NumberFormat
+            value={data.todayDeaths}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.active}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.critical}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
 
-        <td className="datas"> <NumberFormat value={data.casesPerOneMillion} displayType={'text'} thousandSeparator={true}/></td>
-        <td className="datas"> <NumberFormat value={data.deathsPerOneMillion} displayType={'text'} thousandSeparator={true}/></td>
-        <td className="datas"> <NumberFormat value={data.testsPerOneMillion} displayType={'text'} thousandSeparator={true}/></td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.casesPerOneMillion}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.deathsPerOneMillion}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
+        <td className="datas">
+          {" "}
+          <NumberFormat
+            value={data.testsPerOneMillion}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+        </td>
       </tr>
     );
   });
 
   function handleChange(col) {
     type === "asc" ? setType("desc") : setType("asc");
-   
+
     setResults(orderBy(results, [col], [type]));
   }
 
-  function handleSearch(event)
-  {
-      setSearch(event.target.value)
-      const filtered = finalResults.filter(each => ((each.country).toUpperCase()).startsWith((event.target.value).toUpperCase()));
-      setResults(filtered);
-
+  function handleSearch(event) {
+    setSearch(event.target.value);
+    const filtered = finalResults.filter((each) =>
+      each.country.toUpperCase().startsWith(event.target.value.toUpperCase())
+    );
+    setResults(filtered);
   }
 
   function submitHandler(e) {
     e.preventDefault();
-}
+  }
   const image = <img src={sort} alt="Logo" className="image" />;
-
-  return (
+  const table = (
     <div className="all">
-      <CardDeck className = "deck">
+      <CardDeck className="deck">
         <Card
           bg={"secondary"}
           text={"white"}
           className="text-center"
-          style={{  }}
+          style={{}}
         >
           <Card.Body>
             <Card.Title>Cases</Card.Title>
-            <Card.Text><NumberFormat value={latest.cases} displayType={'text'} thousandSeparator={true}/></Card.Text>
+            <Card.Text>
+              <NumberFormat
+                value={latest.cases}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </Card.Text>
           </Card.Body>
           <Card.Footer>
             <small>Last updated: {lastUpdated}</small>
           </Card.Footer>
         </Card>
-        <Card
-          bg={"danger"}
-          text={"white"}
-          className="text-center"
-          style={{ }}
-        >
+        <Card bg={"danger"} text={"white"} className="text-center" style={{}}>
           <Card.Body>
             <Card.Title>Deaths</Card.Title>
-            <Card.Text> <NumberFormat value={latest.deaths} displayType={'text'} thousandSeparator={true}/></Card.Text>
+            <Card.Text>
+              {" "}
+              <NumberFormat
+                value={latest.deaths}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </Card.Text>
           </Card.Body>
           <Card.Footer>
             <small>Last updated: {lastUpdated}}</small>
           </Card.Footer>
         </Card>
-        <Card
-          bg={"success"}
-          text={"white"}
-          className="text-center"
-          style={{ }}
-        >
+        <Card bg={"success"} text={"white"} className="text-center" style={{}}>
           <Card.Body>
             <Card.Title>Recovered</Card.Title>
-            <Card.Text> <NumberFormat value={latest.recovered} displayType={'text'} thousandSeparator={true}/></Card.Text>
+            <Card.Text>
+              {" "}
+              <NumberFormat
+                value={latest.recovered}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </Card.Text>
           </Card.Body>
           <Card.Footer>
             <small>Last updated: {lastUpdated}}</small>
           </Card.Footer>
         </Card>
       </CardDeck>
-      <form onSubmit={submitHandler}style={{textAlign:"center"}}>
+      <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
         <label>
           Search:
-          <input onChange={handleSearch} type="text" name="searching" value = {search}  />
-         
+          <input
+            onChange={handleSearch}
+            type="text"
+            name="searching"
+            value={search}
+          />
         </label>
-       
       </form>
 
-      <Table 
+      <Table
         className="table"
         striped
         bordered
         hover
         variant="dark"
-        responsive 
         style={{ maxWidth: 900 }}
       >
         <thead>
@@ -169,7 +255,6 @@ function App(props) {
               }}
             >
               Country
-              
               {image}
             </th>
             <th
@@ -252,6 +337,16 @@ function App(props) {
         </thead>
         <tbody>{countries}</tbody>
       </Table>
+    </div>
+  );
+
+  return (
+    <div>
+      <div>
+      <Popup/>
+      </div>
+
+      {table}
     </div>
   );
 }

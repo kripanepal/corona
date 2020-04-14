@@ -20,6 +20,7 @@ function Charts(props) {
   const [currentGraph, setCurrentGraph] = useState("USA");
   const [currentType, setCurrenType] = useState("confirmed");
   const [showAll, setShowAll] = useState(false);
+  var lastDate;
 
   useEffect(() => {
     fetch("https://pomber.github.io/covid19/timeseries.json")
@@ -56,7 +57,10 @@ function Charts(props) {
     if (data[search]) {
       finalData = data[search];
       if (!loading) {
-        finalData.forEach((element) => {});
+        finalData.forEach((element) => {
+          lastDate = element.date;
+          element.date = (element.date + "").substring(5);
+        });
 
         return finalData;
       }
@@ -64,23 +68,35 @@ function Charts(props) {
   }
 
   function showFoot() {
+    let fixed = (
+      <span className="graphMessage">Graph last updated on : {lastDate}</span>
+    );
+
     if (props.from !== "small") {
-      return <span className="graphCountry">{currentGraph} </span>;
+      fixed = (
+        <div>
+          {" "}
+          {fixed} <span className="graphCountry">{currentGraph} </span>{" "}
+        </div>
+      );
     }
+    return fixed;
   }
 
   function renderLineChart() {
     var width;
-    console.log(props.from);
+
     if (props.from === "small") {
       width = "120%";
     }
+
+    var current = config();
 
     if (!showAll) {
       return (
         <div className="graphs">
           <ResponsiveContainer width={width} height={400}>
-            <LineChart data={config()}>
+            <LineChart data={current}>
               <CartesianGrid />
               <XAxis dataKey="date" />
               <YAxis />
@@ -97,7 +113,7 @@ function Charts(props) {
     return (
       <div className="graphs">
         <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={config()}>
+          <LineChart data={current}>
             <CartesianGrid />
             <XAxis dataKey="date" />
             <YAxis />
@@ -108,7 +124,7 @@ function Charts(props) {
         </ResponsiveContainer>
 
         <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={config()}>
+          <LineChart data={current}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
@@ -120,7 +136,7 @@ function Charts(props) {
         </ResponsiveContainer>
 
         <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={config()}>
+          <LineChart data={current}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
@@ -186,13 +202,15 @@ function Charts(props) {
   var temporary = showAll ? "Show confirmed" : "Show All";
 
   return loading ? (
-    <div className = "spinners">   <Spinner animation="grow" variant="primary" />
-    <Spinner animation="grow" variant="secondary" />
-    <Spinner animation="grow" variant="success" />
-    <Spinner animation="grow" variant="danger" />
-    <Spinner animation="grow" variant="warning" />
-    <Spinner animation="grow" variant="info" />
-   </div>
+    <div className="spinners">
+      {" "}
+      <Spinner animation="grow" variant="primary" />
+      <Spinner animation="grow" variant="secondary" />
+      <Spinner animation="grow" variant="success" />
+      <Spinner animation="grow" variant="danger" />
+      <Spinner animation="grow" variant="warning" />
+      <Spinner animation="grow" variant="info" />
+    </div>
   ) : (
     <div className="chartsNew">
       {isFrom()}

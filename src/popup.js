@@ -7,7 +7,6 @@ function Popup(props) {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
 
-  console.log(props) 
   return (
     <>
       <span style = {{cursor: "pointer"}}onClick={handleShow}>{props.name}</span>

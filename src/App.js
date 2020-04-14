@@ -4,17 +4,14 @@ import CardDeck from "react-bootstrap/CardDeck";
 import Card from "react-bootstrap/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
-import orderBy from "lodash/orderBy";
 import sort from "./sort.png";
 import NumberFormat from "react-number-format";
 import Popup from "./popup";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import Charts from "./Charts";
 import "react-tabs/style/react-tabs.css";
-import Button from 'react-bootstrap/Button'
-import Spinner from 'react-bootstrap/Spinner'
-
-
+import Button from "react-bootstrap/Button";
+import Spinner from "react-bootstrap/Spinner";
 
 function App(props) {
   const [latest, setLatest] = useState([]);
@@ -32,15 +29,28 @@ function App(props) {
 
       .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
       .then((data) => {
-        
-        setResults(orderBy(data[1], ["cases"], ["desc"]));
-        setFinalResults(orderBy(data[1], ["cases"], ["desc"]));
-        setLatest(data[0])
+        function compare(a, b) {
+          const bandA = a.cases;
+          const bandB = b.cases;
+
+          let comparison = 0;
+          if (bandA < bandB) {
+            comparison = 1;
+          } else if (bandA > bandB) {
+            comparison = -1;
+          }
+          return comparison;
+        }
+        const sortedBaz = data[1].slice().sort(compare);
+
+        setResults(sortedBaz);
+        setFinalResults(sortedBaz);
+        setLatest(data[0]);
         setIsloading(false);
       });
   }, []);
-  
- const date = new Date(parseInt(latest.updated));
+
+  const date = new Date(parseInt(latest.updated));
   const lastUpdated = date.toString();
 
   const countries = results.map((data, i) => {
@@ -51,7 +61,7 @@ function App(props) {
       deathSign = "+";
     }
     let isNewCases = "";
-    let casesSign = "+";
+    let casesSign = "";
     if (data.todayCases !== 0) {
       casesSign = "+";
       isNewCases = "casesNew";
@@ -61,9 +71,8 @@ function App(props) {
       <tr key={i}>
         <td className="country">
           <span style={{ height: `100%` }}>
-            <img src={data.countryInfo.flag} alt="flag" width="20px" />{" "} 
-            <Popup name = {data.country} from = {"small"}/>
-           
+            <img src={data.countryInfo.flag} alt="flag" width="20px" />{" "}
+            <Popup name={data.country} from={"small"} />
           </span>
         </td>
         <td>
@@ -154,9 +163,35 @@ function App(props) {
   });
 
   function handleChange(col) {
-    type === "asc" ? setType("desc") : setType("asc");
+    function compare(a, b) {
+      const bandA = a[col];
+      const bandB = b[col];
 
-    setResults(orderBy(results, [col], [type]));
+      if (type !== "asc") {
+        let comparison = 0;
+        if (bandA > bandB) {
+          comparison = 1;
+        } else if (bandA < bandB) {
+          comparison = -1;
+        }
+        return comparison;
+      }
+      if (type === "asc") {
+        let comparison = 0;
+        if (bandA < bandB) {
+          comparison = 1;
+        } else if (bandA > bandB) {
+          comparison = -1;
+        }
+        return comparison;
+      }
+    }
+
+    const sortedBaz = results.slice().sort(compare);
+
+    setResults(sortedBaz);
+
+    type === "asc" ? setType("desc") : setType("asc");
   }
 
   function handleSearch(event) {
@@ -171,61 +206,71 @@ function App(props) {
     e.preventDefault();
   }
 
-  const image = <img src={sort} alt="Logo" className="image" />;
+  const image = (
+    <img
+      src={sort}
+      style={{ cursor: "pointer" }}
+      alt="Logo"
+      className="image"
+    />
+  );
   const header = (
-
-    <div className= "deckss">
-    <span className = "worldWide">World Wide</span>
-    <CardDeck className="deck">
-      <Card bg={"secondary"} text={"white"} className="text-center" style={{marginLeft:3}}>
-        <Card.Body>
-          <Card.Title>Cases</Card.Title>
-          <Card.Text>
-            <NumberFormat
-              value={latest.cases}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <small>Last updated: {lastUpdated}</small>
-        </Card.Footer>
-      </Card>
-      <Card bg={"danger"} text={"white"} className="text-center" style={{}}>
-        <Card.Body>
-          <Card.Title>Deaths</Card.Title>
-          <Card.Text>
-            {" "}
-            <NumberFormat
-              value={latest.deaths}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <small>Last updated: {lastUpdated}}</small>
-        </Card.Footer>
-      </Card>
-      <Card bg={"success"} text={"white"} className="text-center" style={{}}>
-        <Card.Body>
-          <Card.Title>Recovered</Card.Title>
-          <Card.Text>
-            {" "}
-            <NumberFormat
-              value={latest.recovered}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </Card.Text>
-        </Card.Body>
-        <Card.Footer>
-          <small>Last updated: {lastUpdated}}</small>
-        </Card.Footer>
-      </Card>
-    </CardDeck>
-
+    <div className="deckss">
+      <span className="worldWide">World Wide</span>
+      <CardDeck className="deck">
+        <Card
+          bg={"secondary"}
+          text={"white"}
+          className="text-center"
+          style={{ marginLeft: 3 }}
+        >
+          <Card.Body>
+            <Card.Title>Cases</Card.Title>
+            <Card.Text>
+              <NumberFormat
+                value={latest.cases}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small>Last updated: {lastUpdated}</small>
+          </Card.Footer>
+        </Card>
+        <Card bg={"danger"} text={"white"} className="text-center" style={{}}>
+          <Card.Body>
+            <Card.Title>Deaths</Card.Title>
+            <Card.Text>
+              {" "}
+              <NumberFormat
+                value={latest.deaths}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small>Last updated: {lastUpdated}}</small>
+          </Card.Footer>
+        </Card>
+        <Card bg={"success"} text={"white"} className="text-center" style={{}}>
+          <Card.Body>
+            <Card.Title>Recovered</Card.Title>
+            <Card.Text>
+              {" "}
+              <NumberFormat
+                value={latest.recovered}
+                displayType={"text"}
+                thousandSeparator={true}
+              />
+            </Card.Text>
+          </Card.Body>
+          <Card.Footer>
+            <small>Last updated: {lastUpdated}}</small>
+          </Card.Footer>
+        </Card>
+      </CardDeck>
     </div>
   );
 
@@ -253,89 +298,118 @@ function App(props) {
         >
           <thead>
             <tr>
-              <th
-                onClick={() => {
-                  handleChange("country");
-                }}
-              >
+              <th>
                 Country
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("country");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("cases");
-                }}
-              >
+              <th>
                 Total cases
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("cases");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("deaths");
-                }}
-              >
+              <th>
                 Deaths
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("deaths");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("recovered");
-                }}
-              >
+              <th>
                 Recovered
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("recovered");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("todayCases");
-                }}
-              >
+              <th>
+                {" "}
                 New cases
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("todayCases");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("todayDeaths");
-                }}
-              >
+              <th>
+                {" "}
                 New deaths
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("todayDeaths");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("active");
-                }}
-              >
+              <th>
+                {" "}
                 Active cases
-                {image}
+                <span
+                  onClick={() => {
+                    handleChange("active");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("critical");
-                }}
-              >
-                Critical{image}
+              <th>
+                Critical
+                <span
+                  onClick={() => {
+                    handleChange("critical");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("critical");
-                }}
-              >
-                Cases/1M{image}
+              <th>
+                Cases/1M
+                <span
+                  onClick={() => {
+                    handleChange("critical");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("critical");
-                }}
-              >
-                Deaths/1M{image}
+              <th>
+                Deaths/1M
+                <span
+                  onClick={() => {
+                    handleChange("critical");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
-              <th
-                onClick={() => {
-                  handleChange("critical");
-                }}
-              >
-                Tests/1M{image}
+              <th>
+                Tests/1M
+                <span
+                  onClick={() => {
+                    handleChange("critical");
+                  }}
+                >
+                  {image}
+                </span>
               </th>
             </tr>
           </thead>
@@ -346,10 +420,16 @@ function App(props) {
   );
 
   const tabs = (
-    <Tabs className ="tabs">
+    <Tabs className="tabs">
       <TabList>
-        <Tab> <Button variant="primary"> All countries </Button></Tab>
-        <Tab> <Button variant="info">Graphs</Button></Tab>
+        <Tab>
+          {" "}
+          <Button variant="primary"> All countries </Button>
+        </Tab>
+        <Tab>
+          {" "}
+          <Button variant="info">Graphs</Button>
+        </Tab>
       </TabList>
 
       <TabPanel>{table}</TabPanel>
@@ -359,17 +439,16 @@ function App(props) {
     </Tabs>
   );
   return isLoading ? (
-    <div className = "spinners">   <Spinner animation="grow" variant="primary" />
-    <Spinner animation="grow" variant="secondary" />
-    <Spinner animation="grow" variant="success" />
-    <Spinner animation="grow" variant="danger" />
-    <Spinner animation="grow" variant="warning" />
-    <Spinner animation="grow" variant="info" />
-    <Spinner animation="grow" variant="light" />
-    <Spinner animation="grow" variant="dark" /></div>
+    <div className="spinners">
+      {" "}
+      <Spinner animation="grow" variant="primary" />
+      <Spinner animation="grow" variant="secondary" />
+      <Spinner animation="grow" variant="success" />
+      <Spinner animation="grow" variant="danger" />
+      <Spinner animation="grow" variant="warning" />
+    </div>
   ) : (
-    <div className = "whole">
-   
+    <div className="whole">
       {header}
       {tabs}
     </div>

@@ -1,49 +1,88 @@
-.table
-{
-  margin: 0 auto;  
-  text-align: center; 
-
+.table {
+  margin: 0 auto;
+  text-align: center;
 }
 
+.graphs {
+  width: ;
+}
 
-.all
-{
+.all {
   background-color: burlywood;
   text-align: center;
   min-height: 100vh;
-  height: fit-content+10px;
+  min-height: 100vw;
+  height: fit-content + 10px;
   width: 100vw;
 }
 
-
-.country
-{
+.country {
   text-align: left;
   color: aqua;
- 
 }
-.danger
-{
+.danger {
   color: rgb(218, 67, 67);
 }
-.casesNew
-{
-  color:rgb(250, 129, 129);
+.casesNew {
+  color: rgb(250, 129, 129);
 }
 
-.image
-{
-  width:18px;
-  position:relative;
-  left:20px;
+.image {
+  width: 18px;
+  position: relative;
+  left: 10px;
 }
 
-.graph
-{
+.graph {
   position: relative;
   left: -4%;
+}
+
+.worldWide {
+  color: rgb(165, 66, 8);
+  font-size: 3vw;
+  position: relative;
+  left: 40vw;
+}
+
+.whole {
+  display: block;
+  width: 98.5vw;
+
+  
+}
+
+.deckss {
+
+  margin-left: 2vw;
+  
+  margin-right: 2vw;
 
 }
 
+.spinners{
+  position: absolute;
+  top: 40vh;
+  left: 40vw;
 
 
+}
+
+.chartsNew
+{
+  width: 80%;
+  margin-left: 2vw;
+}
+
+.tabs
+{
+  margin-left: 2vw;
+  margin-right: 2vw;
+
+}
+
+.popCharts
+{
+  width: max-content;
+  border: solid red 5px
+}

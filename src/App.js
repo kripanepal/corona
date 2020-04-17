@@ -23,8 +23,8 @@ function App(props) {
 
   useEffect(() => {
     Promise.all([
-      fetch("https://corona.lmao.ninja/all"),
-      fetch("https://corona.lmao.ninja/countries"),
+      fetch("https://corona.lmao.ninja/v2/all"),
+      fetch("https://corona.lmao.ninja/v2/countries"),
     ])
 
       .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))

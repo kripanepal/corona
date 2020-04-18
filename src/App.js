@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import CardDeck from "react-bootstrap/CardDeck";
-import Card from "react-bootstrap/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import sort from "./sort.png";
@@ -14,44 +12,24 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
 function App(props) {
-  const [latest, setLatest] = useState([]);
   const [results, setResults] = useState([]);
   const [finalResults, setFinalResults] = useState([]);
   const [type, setType] = useState("desc");
   var [search, setSearch] = useState("");
   const [isLoading, setIsloading] = useState(true);
 
+  const [url, setUrl] = useState(props.name);
+
   useEffect(() => {
-    Promise.all([
-      fetch("https://corona.lmao.ninja/v2/all"),
-      fetch("https://corona.lmao.ninja/v2/countries"),
-    ])
-
-      .then(([res1, res2]) => Promise.all([res1.json(), res2.json()]))
+    fetch(url + "?sort=cases")
+      .then((res) => res.json())
       .then((data) => {
-        function compare(a, b) {
-          const bandA = a.cases;
-          const bandB = b.cases;
+        setResults(data);
+        setFinalResults(data);
 
-          let comparison = 0;
-          if (bandA < bandB) {
-            comparison = 1;
-          } else if (bandA > bandB) {
-            comparison = -1;
-          }
-          return comparison;
-        }
-        const sortedBaz = data[1].slice().sort(compare);
-
-        setResults(sortedBaz);
-        setFinalResults(sortedBaz);
-        setLatest(data[0]);
         setIsloading(false);
       });
   }, []);
-
-  const date = new Date(parseInt(latest.updated));
-  const lastUpdated = date.toString();
 
   const countries = results.map((data, i) => {
     let isNewDeath = "";
@@ -150,6 +128,7 @@ function App(props) {
             thousandSeparator={true}
           />
         </td>
+
         <td className="datas">
           {" "}
           <NumberFormat
@@ -196,6 +175,7 @@ function App(props) {
 
   function handleSearch(event) {
     setSearch(event.target.value);
+
     const filtered = finalResults.filter((each) =>
       each.country.toUpperCase().startsWith(event.target.value.toUpperCase())
     );
@@ -214,66 +194,6 @@ function App(props) {
       className="image"
     />
   );
-  const header = (
-    <div className="deckss">
-      <span className="worldWide">World Wide</span>
-      <CardDeck className="deck">
-        <Card
-          bg={"secondary"}
-          text={"white"}
-          className="text-center"
-          style={{ marginLeft: 3 }}
-        >
-          <Card.Body>
-            <Card.Title>Cases</Card.Title>
-            <Card.Text>
-              <NumberFormat
-                value={latest.cases}
-                displayType={"text"}
-                thousandSeparator={true}
-              />
-            </Card.Text>
-          </Card.Body>
-          <Card.Footer>
-            <small>Last updated: {lastUpdated}</small>
-          </Card.Footer>
-        </Card>
-        <Card bg={"danger"} text={"white"} className="text-center" style={{}}>
-          <Card.Body>
-            <Card.Title>Deaths</Card.Title>
-            <Card.Text>
-              {" "}
-              <NumberFormat
-                value={latest.deaths}
-                displayType={"text"}
-                thousandSeparator={true}
-              />
-            </Card.Text>
-          </Card.Body>
-          <Card.Footer>
-            <small>Last updated: {lastUpdated}}</small>
-          </Card.Footer>
-        </Card>
-        <Card bg={"success"} text={"white"} className="text-center" style={{}}>
-          <Card.Body>
-            <Card.Title>Recovered</Card.Title>
-            <Card.Text>
-              {" "}
-              <NumberFormat
-                value={latest.recovered}
-                displayType={"text"}
-                thousandSeparator={true}
-              />
-            </Card.Text>
-          </Card.Body>
-          <Card.Footer>
-            <small>Last updated: {lastUpdated}}</small>
-          </Card.Footer>
-        </Card>
-      </CardDeck>
-    </div>
-  );
-
   const table = (
     <>
       <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
@@ -385,7 +305,7 @@ function App(props) {
                 Cases/1M
                 <span
                   onClick={() => {
-                    handleChange("critical");
+                    handleChange("casesPerOneMillion");
                   }}
                 >
                   {image}
@@ -395,7 +315,7 @@ function App(props) {
                 Deaths/1M
                 <span
                   onClick={() => {
-                    handleChange("critical");
+                    handleChange("deathsPerOneMillion");
                   }}
                 >
                   {image}
@@ -405,7 +325,7 @@ function App(props) {
                 Tests/1M
                 <span
                   onClick={() => {
-                    handleChange("critical");
+                    handleChange("testsPerOneMillion");
                   }}
                 >
                   {image}
@@ -448,10 +368,7 @@ function App(props) {
       <Spinner animation="grow" variant="warning" />
     </div>
   ) : (
-    <div className="whole">
-      {header}
-      {tabs}
-    </div>
+    <div className="whole">{tabs}</div>
   );
 }
 

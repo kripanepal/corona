@@ -3,6 +3,10 @@ import "./App.css";
 import "./charts.css";
 import Spinner from "react-bootstrap/Spinner";
 
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Popover from "react-bootstrap/Popover";
+import Button from "react-bootstrap/Button";
+
 import {
   LineChart,
   Line,
@@ -15,55 +19,83 @@ import {
 } from "recharts";
 
 function Charts(props) {
-  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentGraph, setCurrentGraph] = useState("USA");
   const [currentType, setCurrenType] = useState("confirmed");
   const [showAll, setShowAll] = useState(false);
+  const [numDays, setNumdays] = useState(30);
+
+  var [toBeAdded, setToBeAdded] = useState(["USA"]);
+  const [countryList, setCountryList] = useState(["USA"]);
+
+  const [test, setTest] = useState([]);
+
   var lastDate;
 
   useEffect(() => {
-    fetch("https://pomber.github.io/covid19/timeseries.json")
-      .then((response) => response.json())
+    fetch(`https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`)
+      .then((res) => res.json())
       .then((data) => {
-        setData(data);
+        setTest(data);
+
         setLoading(false);
         var search = props.name;
-        if (props.name === "UK") {
-          search = "United Kingdom";
-        }
 
-        if (props.name === "USA") {
-          search = "US";
-        }
-
-        if (props.name === "UAE") {
-          search = "United Arab Emirates";
-        }
-
-        if (props.name === "S.Korea") {
-          search = "South Korea";
-        }
         setCurrentGraph(search);
       });
+
     // eslint-disable-next-line
-  }, []);
+  }, [numDays]);
 
-  function config() {
-    let search = currentGraph;
+  function testing(needed) {
+    var casesArray = [];
+    var deathsArray = [];
+    var recoveredArray = [];
+    var countries = countryList;
+    var first = "true";
 
-    let finalData;
+    test.forEach((element) => {
+      if (countries.includes(element.country)) {
+        var historyData = { ...element.timeline };
 
-    if (data[search]) {
-      finalData = data[search];
-      if (!loading) {
-        finalData.forEach((element) => {
-          lastDate = element.date;
-          element.date = (element.date + "").substring(5);
-        });
+        var dates = Object.keys(historyData.cases);
+        var cases = Object.values(historyData.cases);
+        var deaths = Object.values(historyData.deaths);
+        var recovered = Object.values(historyData.recovered);
 
-        return finalData;
+        for (var i = 0; i < dates.length; i++) {
+          if (casesArray.length < cases.length) {
+            casesArray.push({});
+            deathsArray.push({});
+            recoveredArray.push({});
+          }
+        }
+
+        for (var i = 0; i < dates.length; i++) {
+          if (first) {
+            casesArray[i]["date"] = dates[i];
+            deathsArray[i]["date"] = dates[i];
+            recoveredArray[i]["date"] = dates[i];
+            lastDate = dates[i];
+          }
+
+          casesArray[i][element.country] = cases[i];
+          deathsArray[i][element.country] = deaths[i];
+          recoveredArray[i][element.country] = recovered[i];
+        }
+        first = false;
       }
+    });
+
+    if (currentType === "confirmed" && needed === "confirmed") {
+      return casesArray;
+    }
+
+    if (currentType === "recovered" || needed === "recovered") {
+      return recoveredArray;
+    }
+    if (currentType === "deaths" || needed === "deaths") {
+      return deathsArray;
     }
   }
 
@@ -72,15 +104,30 @@ function Charts(props) {
       <span className="graphMessage">Graph last updated on : {lastDate}</span>
     );
 
-    if (props.from !== "small") {
-      fixed = (
-        <div>
-          {" "}
-          {fixed} <span className="graphCountry">{currentGraph} </span>{" "}
-        </div>
-      );
-    }
     return fixed;
+  }
+
+  function returnLines() {
+    var temp;
+    if (countryList.length === 1) {
+      temp = <Line dataKey={countryList[0]} stroke="#8884d8" />;
+    }
+    if (countryList.length > 1) {
+      temp = countryList.map((each) => {
+        return <Line dataKey={each} stroke={getRandomColor()} />;
+      });
+    }
+
+    return temp;
+  }
+
+  function getRandomColor() {
+    var letters = "0123456789ABCDEF";
+    var color = "#";
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 
   function renderLineChart() {
@@ -90,19 +137,20 @@ function Charts(props) {
       width = "120%";
     }
 
-    var current = config();
-
     if (!showAll) {
+      var current = testing("confirmed");
+
       return (
         <div className="graphs">
           <ResponsiveContainer width={width} height={400}>
-            <LineChart data={current}>
+            <LineChart  data={current}>
               <CartesianGrid />
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line dataKey={currentType} stroke="#8884d8" />
+
+              {returnLines()}
             </LineChart>
           </ResponsiveContainer>
           {showFoot()}
@@ -113,37 +161,37 @@ function Charts(props) {
     return (
       <div className="graphs">
         <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={current}>
+          <LineChart data={testing("confirmed")}>
             <CartesianGrid />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line dataKey="confirmed" stroke="#8884d8" />
+            {returnLines()}
           </LineChart>
         </ResponsiveContainer>
 
         <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={current}>
+          <LineChart data={testing("recovered")}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
             <Legend />
 
-            <Line type="monotone" dataKey="deaths" stroke="red" />
+            {returnLines()}
           </LineChart>
         </ResponsiveContainer>
 
         <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={current}>
+          <LineChart data={testing("deaths")}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
             <YAxis />
             <Tooltip />
             <Legend />
 
-            <Line type="monotone" dataKey="recovered" stroke="green" />
+            {returnLines()}
           </LineChart>
         </ResponsiveContainer>
 
@@ -152,6 +200,8 @@ function Charts(props) {
     );
   }
   function handleList(e) {
+    removeFromList(currentGraph);
+    setCountryList([...countryList, e.target.value]);
     setCurrentGraph(e.target.value);
   }
 
@@ -163,43 +213,131 @@ function Charts(props) {
     showAll ? setShowAll(false) : setShowAll(true);
   }
 
+  function changeDays(event) {
+    if (event.which == 13) {
+      setNumdays(event.target.value);
+    }
+  }
+
   function handleTypes() {
     if (!showAll) {
       return (
-        <form>
-          <label> Select Graph type </label>
-          <select name="type" value={currentType} onChange={handleType}>
-            <option value="confirmed">Confirmed</option>
-            <option value="deaths"> Deaths</option>
-            <option value="recovered"> Recovered</option>
-          </select>
-        </form>
+        <>
+          <form>
+            <label>Graph type </label>
+            <select name="type" value={currentType} onChange={handleType}>
+              <option value="confirmed">Confirmed</option>
+              <option value="deaths"> Deaths</option>
+              <option value="recovered"> Recovered</option>
+            </select>
+
+            <button type="button" onClick={(e) => show3(e)}>
+              {" " + temporary()}
+            </button>
+          </form>
+        </>
       );
     }
+  }
+
+  function returnCountryList() {
+    var full = Object.values(test);
+    let again = new Set();
+    full.map((ele, i) => {
+      again.add(ele.country);
+    });
+    return Array.from(again);
+  }
+
+  function addToList(toadd) {
+    setCountryList((old) => [...old, toadd]);
   }
 
   function isFrom() {
     if (props.from !== "small") {
       return (
-        <form onSubmit={(e) => e.preventDefault}>
-          <label>Country:</label>
-          <select name="country" value={currentGraph} onChange={handleList}>
-            <option disabled>Select Country</option>
-            {Object.keys(data).map((value, i) => (
-              <option value={value} key={i}>
-                {value}
-              </option>
-            ))}
-          </select>
-          <button type="button" onClick={show3}>
-            {temporary}
-          </button>
-        </form>
+        <>
+          <form onSubmit={(e) => e.preventDefault}>
+            <label>Country:</label>
+
+            <select
+              name="country"
+              value={currentGraph}
+              onChange={handleList}
+              className="selectList"
+            >
+              <option disabled>Select Country</option>
+              {returnCountryList().map((value, i) => (
+                <option value={value} key={i}>
+                  {value}
+                </option>
+              ))}
+              ))}
+            </select>
+            <form onSubmit={(e) => e.preventDefault()}>
+              Number of days:
+              <input
+                type="text"
+                onKeyPress={changeDays}
+                style={{ width: 50 }}
+              />
+            </form>
+            <br />
+            {handleTypes()}
+
+            <br />
+            <label>Add to graph:</label>
+            <select
+              className="selectList"
+              value={toBeAdded}
+              name="country"
+              onChange={(e) => {
+                setToBeAdded(e.target.value);
+              }}
+            >
+              <option disabled>Select Country</option>
+              {returnCountryList().map((value, i) => (
+                <option value={value} key={i}>
+                  {value}
+                </option>
+              ))}
+              ))}
+            </select>
+            <button type="button" onClick={(e) => addToList(toBeAdded)}>
+              Add
+            </button>
+          </form>
+          <div class="cover"> Select to remove: {showCurrentCountries()} </div>
+        </>
       );
     }
   }
+  function temporary() {
+    var temporary = showAll ? "Show confirmed" : "Show All";
+    return temporary;
+  }
 
-  var temporary = showAll ? "Show confirmed" : "Show All";
+  function removeFromList(toDelete) {
+    var index = countryList.indexOf(toDelete);
+    console.log(index);
+    if (index !== -1) {
+      countryList.splice(index, 1);
+    }
+    if (countryList.length === 0) {
+      setCurrentGraph([]);
+    }
+    setCountryList([...countryList]);
+  }
+
+  function showCurrentCountries() {
+    {
+      return countryList.map((each) => (
+        <span className="displayedList" onClick={() => removeFromList(each)}>
+          {each}{" "}
+        </span>
+      ));
+    }
+  }
 
   return loading ? (
     <div className="spinners">
@@ -214,7 +352,6 @@ function Charts(props) {
   ) : (
     <div className="chartsNew">
       {isFrom()}
-      {handleTypes()}
 
       {renderLineChart()}
     </div>

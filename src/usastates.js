@@ -32,16 +32,22 @@ function Main() {
 
     setResults(filtered);
   }
-  const image = (
-    <img
-      src={sort}
-      style={{ cursor: "pointer" }}
-      alt="Logo"
-      className="image"
-    />
-  );
 
-  function submitHandler() {}
+  function image() {
+    const image = (
+      <img
+        src={sort}
+        style={{ cursor: "pointer" }}
+        alt="Logo"
+        className="image"
+      />
+    );
+    return image;
+  }
+
+  function submitHandler(e) {
+    e.preventDefault();
+  }
 
   function handleChange(col) {
     function compare(a, b) {
@@ -75,6 +81,9 @@ function Main() {
     type === "asc" ? setType("desc") : setType("asc");
   }
 
+  function countries()
+  {
+    
   const countries = results.map((data, i) => {
     let isNewDeath = "";
     let deathSign = "";
@@ -160,6 +169,12 @@ function Main() {
       </tr>
     );
   });
+    return countries
+  }
+
+function table()
+{
+
   const table = (
     <>
       <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
@@ -191,7 +206,7 @@ function Main() {
                     handleChange("state");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -201,7 +216,7 @@ function Main() {
                     handleChange("cases");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -211,7 +226,7 @@ function Main() {
                     handleChange("todayCases");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -221,7 +236,7 @@ function Main() {
                     handleChange("deaths");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -232,7 +247,7 @@ function Main() {
                     handleChange("todayDeaths");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -243,7 +258,7 @@ function Main() {
                     handleChange("active");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -254,7 +269,7 @@ function Main() {
                     handleChange("tests");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -264,19 +279,21 @@ function Main() {
                     handleChange("testsPerOneMillion");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
             </tr>
           </thead>
-          <tbody>{countries}</tbody>
+          <tbody>{countries()}</tbody>
         </Table>
       </div>
     </>
   );
+  return table
+}
 
   function show() {
-    return <div>{table}</div>;
+    return <div>{table()}</div>;
   }
   if (loading)
     return (

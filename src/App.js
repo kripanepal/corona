@@ -31,115 +31,120 @@ function App(props) {
       });
   }, []);
 
-  const countries = results.map((data, i) => {
-    let isNewDeath = "";
-    let deathSign = "";
-    if (data.todayDeaths !== 0) {
-      isNewDeath = "danger";
-      deathSign = "+";
-    }
-    let isNewCases = "";
-    let casesSign = "";
-    if (data.todayCases !== 0) {
-      casesSign = "+";
-      isNewCases = "casesNew";
-    }
-
-    return (
-      <tr key={i}>
-        <td className="country">
-          <span style={{ height: `100%` }}>
-            <img src={data.countryInfo.flag} alt="flag" width="20px" />{" "}
-            <Popup name={data.country} from={"small"} />
-          </span>
-        </td>
-        <td>
-          {" "}
-          <NumberFormat
-            value={data.cases}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.deaths}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.recovered}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className={isNewCases}>
-          {casesSign}
-
-          <NumberFormat
-            value={data.todayCases}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className={isNewDeath}>
-          {" "}
-          {deathSign}
-          <NumberFormat
-            value={data.todayDeaths}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.active}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.critical}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.casesPerOneMillion}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.deathsPerOneMillion}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-
-        <td className="datas">
-          {" "}
-          <NumberFormat
-            value={data.testsPerOneMillion}
-            displayType={"text"}
-            thousandSeparator={true}
-          />
-        </td>
-      </tr>
-    );
-  });
+  function countries()
+  {
+    const countries = results.map((data, i) => {
+      let isNewDeath = "";
+      let deathSign = "";
+      if (data.todayDeaths !== 0) {
+        isNewDeath = "danger";
+        deathSign = "+";
+      }
+      let isNewCases = "";
+      let casesSign = "";
+      if (data.todayCases !== 0) {
+        casesSign = "+";
+        isNewCases = "casesNew";
+      }
+  
+      return (
+        <tr key={i}>
+          <td className="country">
+            <span style={{ height: `100%` }}>
+              <img src={data.countryInfo.flag} alt="flag" width="20px" />{" "}
+              <Popup name={data.country} from={"small"} />
+            </span>
+          </td>
+          <td>
+            {" "}
+            <NumberFormat
+              value={data.cases}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.deaths}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.recovered}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className={isNewCases}>
+            {casesSign}
+  
+            <NumberFormat
+              value={data.todayCases}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className={isNewDeath}>
+            {" "}
+            {deathSign}
+            <NumberFormat
+              value={data.todayDeaths}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.active}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.critical}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+  
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.casesPerOneMillion}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.deathsPerOneMillion}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+  
+          <td className="datas">
+            {" "}
+            <NumberFormat
+              value={data.testsPerOneMillion}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </td>
+        </tr>
+      );
+    });
+    return countries
+  }
+ 
 
   function handleChange(col) {
     function compare(a, b) {
@@ -186,14 +191,22 @@ function App(props) {
     e.preventDefault();
   }
 
-  const image = (
-    <img
-      src={sort}
-      style={{ cursor: "pointer" }}
-      alt="Logo"
-      className="image"
-    />
-  );
+  function image()
+  {
+    const image = (
+      <img
+        src={sort}
+        style={{ cursor: "pointer" }}
+        alt="Logo"
+        className="image"
+      />
+    );
+    return image;
+  }
+
+  function table()
+  {
+    
   const table = (
     <>
       <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
@@ -225,7 +238,7 @@ function App(props) {
                     handleChange("country");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -235,7 +248,7 @@ function App(props) {
                     handleChange("cases");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -245,7 +258,7 @@ function App(props) {
                     handleChange("deaths");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -255,7 +268,7 @@ function App(props) {
                     handleChange("recovered");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -266,7 +279,7 @@ function App(props) {
                     handleChange("todayCases");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -277,7 +290,7 @@ function App(props) {
                     handleChange("todayDeaths");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -288,7 +301,7 @@ function App(props) {
                     handleChange("active");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -298,7 +311,7 @@ function App(props) {
                     handleChange("critical");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -308,7 +321,7 @@ function App(props) {
                     handleChange("casesPerOneMillion");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -318,7 +331,7 @@ function App(props) {
                     handleChange("deathsPerOneMillion");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
               <th>
@@ -328,36 +341,43 @@ function App(props) {
                     handleChange("testsPerOneMillion");
                   }}
                 >
-                  {image}
+                  {image()}
                 </span>
               </th>
             </tr>
           </thead>
-          <tbody>{countries}</tbody>
+          <tbody>{countries()}</tbody>
         </Table>
       </div>
     </>
   );
+    return table;
+  }
 
-  const tabs = (
-    <Tabs className="tabs">
-      <TabList>
-        <Tab>
-          {" "}
-          <Button variant="primary"> All countries </Button>
-        </Tab>
-        <Tab>
-          {" "}
-          <Button variant="info">Graphs</Button>
-        </Tab>
-      </TabList>
-
-      <TabPanel>{table}</TabPanel>
-      <TabPanel>
-        <Charts name="US" />
-      </TabPanel>
-    </Tabs>
-  );
+  function tabs()
+  {
+    const tabs = (
+      <Tabs className="tabs">
+        <TabList>
+          <Tab>
+            {" "}
+            <Button variant="primary"> All countries </Button>
+          </Tab>
+          <Tab>
+            {" "}
+            <Button variant="info">Graphs</Button>
+          </Tab>
+        </TabList>
+  
+        <TabPanel>{table()}</TabPanel>
+        <TabPanel>
+          <Charts name="USA" />
+        </TabPanel>
+      </Tabs>
+    );
+    return tabs;
+  }
+  
   return isLoading ? (
     <div className="spinners">
       {" "}
@@ -368,7 +388,7 @@ function App(props) {
       <Spinner animation="grow" variant="warning" />
     </div>
   ) : (
-    <div className="whole">{tabs}</div>
+    <div className="whole">{tabs()}</div>
   );
 }
 

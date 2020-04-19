@@ -302,7 +302,7 @@ function Charts(props) {
               onChange={handleList}
               className="selectList"
             >
-              <option disabled>Select Country</option>
+              <option value ='' >Select Country</option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
                   {value}
@@ -319,7 +319,7 @@ function Charts(props) {
                 setToBeAdded(e.target.value);
               }}
             >
-              <option disabled > Select Country</option>
+              <option value =''> Select Country</option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
                   {value}

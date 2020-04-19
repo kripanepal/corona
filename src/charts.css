@@ -41,3 +41,13 @@
     width: 150px;
 
 }
+
+.chartHeat {
+    display: flex;
+    flex-direction: column;
+  }
+  
+ h3 {
+    margin-left: 33vw;
+   
+  }

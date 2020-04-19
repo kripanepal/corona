@@ -3,10 +3,6 @@ import "./App.css";
 import "./charts.css";
 import Spinner from "react-bootstrap/Spinner";
 
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Popover from "react-bootstrap/Popover";
-import Button from "react-bootstrap/Button";
-
 import {
   LineChart,
   Line,
@@ -25,7 +21,7 @@ function Charts(props) {
   const [showAll, setShowAll] = useState(false);
   const [numDays, setNumdays] = useState(30);
 
-  var [toBeAdded, setToBeAdded] = useState(["USA"]);
+  const [toBeAdded, setToBeAdded] = useState(["USA"]);
   const [countryList, setCountryList] = useState(["USA"]);
 
   const [test, setTest] = useState([]);
@@ -110,24 +106,28 @@ function Charts(props) {
   function returnLines() {
     var temp;
     if (countryList.length === 1) {
-      temp = <Line dataKey={countryList[0]} stroke="#8884d8" />;
+      temp = <Line dataKey={countryList[0]}  stroke={stringToColour(countryList[0])}/>;
     }
     if (countryList.length > 1) {
       temp = countryList.map((each) => {
-        return <Line dataKey={each} stroke={getRandomColor()} />;
+        return <Line dataKey={each} stroke={stringToColour(each)} />;
       });
     }
 
     return temp;
   }
 
-  function getRandomColor() {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+  var stringToColour = function(str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    return color;
+    var colour = '#';
+    for (var i = 0; i < 3; i++) {
+      var value = (hash >> (i * 8)) & 0xFF;
+      colour += ('00' + value.toString(16)).substr(-2);
+    }
+    return colour;
   }
 
   function renderLineChart() {
@@ -142,9 +142,48 @@ function Charts(props) {
 
       return (
         <div className="graphs">
-          <ResponsiveContainer width={width} height={400}>
-            <LineChart  data={current}>
+          <div>
+            {" "}
+            <h3>{currentType} </h3>
+            <ResponsiveContainer width={width} height={400}>
+              <LineChart data={current}>
+                <CartesianGrid />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+
+                {returnLines()}
+              </LineChart>
+            </ResponsiveContainer>
+            {showFoot()}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="graphs">
+        <div>
+          {" "}
+          <h3>Confirmed </h3>
+          <ResponsiveContainer width="95%" height={400}>
+            <LineChart data={testing("confirmed")}>
               <CartesianGrid />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              {returnLines()}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div>
+          {" "}
+          <h3>Recovered </h3>
+          <ResponsiveContainer width="95%" height={400}>
+            <LineChart data={testing("recovered")}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
@@ -153,47 +192,22 @@ function Charts(props) {
               {returnLines()}
             </LineChart>
           </ResponsiveContainer>
-          {showFoot()}
         </div>
-      );
-    }
+        <div>
+          {" "}
+          <h3>Deaths </h3>
+          <ResponsiveContainer width="95%" height={400}>
+            <LineChart data={testing("deaths")}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="date" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
 
-    return (
-      <div className="graphs">
-        <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={testing("confirmed")}>
-            <CartesianGrid />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {returnLines()}
-          </LineChart>
-        </ResponsiveContainer>
-
-        <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={testing("recovered")}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-
-            {returnLines()}
-          </LineChart>
-        </ResponsiveContainer>
-
-        <ResponsiveContainer width="95%" height={400}>
-          <LineChart data={testing("deaths")}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-
-            {returnLines()}
-          </LineChart>
-        </ResponsiveContainer>
+              {returnLines()}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
 
         {showFoot()}
       </div>
@@ -222,22 +236,45 @@ function Charts(props) {
   function handleTypes() {
     if (!showAll) {
       return (
-        <>
+     
           <form>
-            <label>Graph type </label>
-            <select name="type" value={currentType} onChange={handleType}>
+            <label> Select Graph type </label>
+            <select
+              name="type"
+              value={currentType}
+              onChange={handleType}
+              className="selectList"
+            >
               <option value="confirmed">Confirmed</option>
               <option value="deaths"> Deaths</option>
               <option value="recovered"> Recovered</option>
             </select>
-
             <button type="button" onClick={(e) => show3(e)}>
-              {" " + temporary()}
-            </button>
+    {temporary()}
+  </button>
+  <form onSubmit={(e) => e.preventDefault()}>
+          Number of days:
+            <input type="number" min='0' max = '200'
+            placeholder={numDays}
+            style = {{width:50}} onKeyPress={changeDays} />
           </form>
-        </>
+          </form>
+          
+     
       );
     }
+
+    return(<> <button type="button" onClick={(e) => show3(e)}>
+    {temporary()}
+  </button>
+   <form onSubmit={(e) => e.preventDefault()}>
+   Number of days:
+     <input type="number" min='0' max = '200'
+     placeholder={numDays}
+     style = {{width:50}} onKeyPress={changeDays} />
+   </form>
+   </>
+)
   }
 
   function returnCountryList() {
@@ -261,7 +298,6 @@ function Charts(props) {
             <label>Country:</label>
 
             <select
-              name="country"
               value={currentGraph}
               onChange={handleList}
               className="selectList"
@@ -274,28 +310,16 @@ function Charts(props) {
               ))}
               ))}
             </select>
-            <form onSubmit={(e) => e.preventDefault()}>
-              Number of days:
-              <input
-                type="text"
-                onKeyPress={changeDays}
-                style={{ width: 50 }}
-              />
-            </form>
-            <br />
-            {handleTypes()}
 
-            <br />
-            <label>Add to graph:</label>
             <select
               className="selectList"
-              value={toBeAdded}
+              value = {toBeAdded[0]}
               name="country"
               onChange={(e) => {
                 setToBeAdded(e.target.value);
               }}
             >
-              <option disabled>Select Country</option>
+              <option disabled > Select Country</option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
                   {value}
@@ -304,13 +328,18 @@ function Charts(props) {
               ))}
             </select>
             <button type="button" onClick={(e) => addToList(toBeAdded)}>
-              Add
+              Add to Graph
             </button>
           </form>
-          <div class="cover"> Select to remove: {showCurrentCountries()} </div>
+         
+          {handleTypes()}
+        
+       
+          <div class = 'cover'> Select to remove: {showCurrentCountries()}</div>
         </>
       );
     }
+    return handleTypes();
   }
   function temporary() {
     var temporary = showAll ? "Show confirmed" : "Show All";
@@ -322,9 +351,6 @@ function Charts(props) {
     console.log(index);
     if (index !== -1) {
       countryList.splice(index, 1);
-    }
-    if (countryList.length === 0) {
-      setCurrentGraph([]);
     }
     setCountryList([...countryList]);
   }

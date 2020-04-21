@@ -331,7 +331,7 @@ function Charts(props) {
 
             <select value = {currentGraph} onChange={handleList} className="selectList">
               <option  disabled>
-                Select Country
+                Select Country to compare
               </option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
@@ -349,7 +349,7 @@ function Charts(props) {
                 setToBeAdded(e.target.value);
               }}
             >
-              <option disabled> Select Country</option>
+              <option disabled selected> Select Country</option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
                   {value}
@@ -364,7 +364,7 @@ function Charts(props) {
 
           {handleTypes()}
 
-          <div className="cover"> Select to remove: {showCurrentCountries()}</div>
+          <div className="cover"> Click to remove: {showCurrentCountries()}</div>
         </>
       );
     }

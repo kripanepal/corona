@@ -88,12 +88,14 @@ function Main() {
     let isNewDeath = "";
     let deathSign = "";
     if (data.todayDeaths !== 0) {
+      console.log(data.todayDeaths)
       isNewDeath = "danger";
       deathSign = "+";
     }
     let isNewCases = "";
     let casesSign = "";
     if (data.todayCases !== 0) {
+      console.log(data.todayCases)
       casesSign = "+";
       isNewCases = "casesNew";
     }
@@ -114,7 +116,7 @@ function Main() {
             thousandSeparator={true}
           />
         </td>
-        <td className="datas">
+        <td className={isNewCases}>
           {" "}
           <NumberFormat
             value={data.todayCases}
@@ -123,7 +125,7 @@ function Main() {
           />
         </td>
 
-        <td className={isNewCases}>
+        <td  className="datas">
           {casesSign}
 
           <NumberFormat

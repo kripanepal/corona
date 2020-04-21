@@ -18,7 +18,7 @@ function App(props) {
   var [search, setSearch] = useState("");
   const [isLoading, setIsloading] = useState(true);
 
-  const [url, setUrl] = useState(props.name);
+  const [url] = useState(props.name);
 
   useEffect(() => {
     fetch(url + "?sort=cases")
@@ -29,7 +29,7 @@ function App(props) {
 
         setIsloading(false);
       });
-  }, []);
+  }, [url]);
 
   function countries()
   {

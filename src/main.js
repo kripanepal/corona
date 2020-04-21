@@ -1,7 +1,7 @@
 import React from 'react'
 import App from './App';
 import Header from'./header'
-import Spinner from "react-bootstrap/Spinner";
+
 
 function main(props) {
     return (

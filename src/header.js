@@ -4,12 +4,12 @@ import Card from "react-bootstrap/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NumberFormat from "react-number-format";
 import Spinner from "react-bootstrap/Spinner";
-import sort from "./sort.png";
+
 
 function Main() {
   let [latest, setLatest] = useState([]);
   let [loading, setLoading] = useState(true);
-  useEffect(async () => {
+  useEffect( () => {
     fetch("https://corona.lmao.ninja/v2/all")
       .then((res) => res.json())
       .then((data) => {

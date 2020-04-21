@@ -16,7 +16,7 @@ import {
 
 function Charts(props) {
   const [loading, setLoading] = useState(true);
-  const [currentGraph, setCurrentGraph] = useState("USA");
+  const [currentGraph, setCurrentGraph] = useState();
   const [currentType, setCurrenType] = useState("confirmed");
   const [showAll, setShowAll] = useState(false);
   const [numDays, setNumdays] = useState(30);
@@ -36,7 +36,11 @@ function Charts(props) {
 
         setLoading(false);
         var search = props.name;
-
+        if(props.from==='small')
+        {
+          setCurrentGraph(props.name)
+          setCountryList([props.name])
+        }
         setCurrentGraph(search);
       });
 
@@ -51,6 +55,7 @@ function Charts(props) {
     var first = "true";
 
     test.forEach((element) => {
+      
       if (countries.includes(element.country)) {
         var historyData = { ...element.timeline };
 
@@ -67,7 +72,7 @@ function Charts(props) {
           }
         }
 
-        for (var i = 0; i < dates.length; i++) {
+        for (let i = 0; i < dates.length; i++) {
           if (first) {
             casesArray[i]["date"] = dates[i];
             deathsArray[i]["date"] = dates[i];
@@ -82,6 +87,7 @@ function Charts(props) {
         first = false;
       }
     });
+
 
     if (currentType === "confirmed" && needed === "confirmed") {
       return casesArray;
@@ -106,7 +112,12 @@ function Charts(props) {
   function returnLines() {
     var temp;
     if (countryList.length === 1) {
-      temp = <Line dataKey={countryList[0]}  stroke={stringToColour(countryList[0])}/>;
+      temp = (
+        <Line
+          dataKey={countryList[0]}
+          stroke={stringToColour(countryList[0])}
+        />
+      );
     }
     if (countryList.length > 1) {
       temp = countryList.map((each) => {
@@ -117,18 +128,18 @@ function Charts(props) {
     return temp;
   }
 
-  var stringToColour = function(str) {
+  var stringToColour = function (str) {
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    var colour = '#';
-    for (var i = 0; i < 3; i++) {
-      var value = (hash >> (i * 8)) & 0xFF;
-      colour += ('00' + value.toString(16)).substr(-2);
+    var colour = "#";
+    for (var j = 0; j < 3; j++) {
+      var value = (hash >> (j * 8)) & 0xff;
+      colour += ("00" + value.toString(16)).substr(-2);
     }
     return colour;
-  }
+  };
 
   function renderLineChart() {
     var width;
@@ -228,7 +239,7 @@ function Charts(props) {
   }
 
   function changeDays(event) {
-    if (event.which == 13) {
+    if (event.which === 13) {
       setNumdays(event.target.value);
     }
   }
@@ -236,58 +247,79 @@ function Charts(props) {
   function handleTypes() {
     if (!showAll) {
       return (
-     
-          <form>
-            <label> Select Graph type </label>
-            <select
-              name="type"
-              value={currentType}
-              onChange={handleType}
-              className="selectList"
-            >
-              <option value="confirmed">Confirmed</option>
-              <option value="deaths"> Deaths</option>
-              <option value="recovered"> Recovered</option>
-            </select>
-            <button type="button" onClick={(e) => show3(e)}>
-    {temporary()}
-  </button>
-  <form onSubmit={(e) => e.preventDefault()}>
-          Number of days:
-            <input type="number" min='0' max = '200'
-            placeholder={numDays}
-            style = {{width:50}} onKeyPress={changeDays} />
+        <>
+        <form>
+          <label> Select Graph type </label>
+          <select
+            name="type"
+            value={currentType}
+            onChange={handleType}
+            className="selectList"
+          >
+            <option value="confirmed">Confirmed</option>
+            <option value="deaths"> Deaths</option>
+            <option value="recovered"> Recovered</option>
+          </select>
+          <button type="button" onClick={(e) => show3(e)}>
+            {temporary()}
+          </button>
           </form>
-          </form>
-          
-     
+          <form onSubmit={(e) => e.preventDefault()}>
+            Number of days:
+            <input
+              type="number"
+              min="0"
+              max="200"
+              placeholder={numDays}
+              style={{ width: 50 }}
+              onKeyPress={changeDays}
+            />
+         
+        </form>
+        </>
       );
     }
 
-    return(<> <button type="button" onClick={(e) => show3(e)}>
-    {temporary()}
-  </button>
-   <form onSubmit={(e) => e.preventDefault()}>
-   Number of days:
-     <input type="number" min='0' max = '200'
-     placeholder={numDays}
-     style = {{width:50}} onKeyPress={changeDays} />
-   </form>
-   </>
-)
+    return (
+      <>
+        {" "}
+        <button type="button" onClick={(e) => show3(e)}>
+          {temporary()}
+        </button>
+        <form onSubmit={(e) => e.preventDefault()}>
+          Number of days:
+          <input
+            type="number"
+            min="0"
+            max="200"
+            placeholder={numDays}
+            style={{ width: 50 }}
+            onKeyPress={changeDays}
+          />
+        </form>
+      </>
+    );
   }
 
   function returnCountryList() {
     var full = Object.values(test);
     let again = new Set();
     full.map((ele, i) => {
-      again.add(ele.country);
+      return again.add(ele.country);
     });
     return Array.from(again);
   }
 
   function addToList(toadd) {
-    setCountryList((old) => [...old, toadd]);
+
+    if((countryList).includes(toadd+''))
+    {
+      
+    }
+    else{
+      setCountryList((old) => [...old, toadd]);
+    }
+   
   }
 
   function isFrom() {
@@ -297,12 +329,10 @@ function Charts(props) {
           <form onSubmit={(e) => e.preventDefault}>
             <label>Country:</label>
 
-            <select
-              value={currentGraph}
-              onChange={handleList}
-              className="selectList"
-            >
-              <option disabled>Select Country</option>
+            <select value = {currentGraph} onChange={handleList} className="selectList">
+              <option  disabled>
+                Select Country
+              </option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
                   {value}
@@ -313,13 +343,13 @@ function Charts(props) {
 
             <select
               className="selectList"
-              value = {toBeAdded[0]}
+            
               name="country"
               onChange={(e) => {
                 setToBeAdded(e.target.value);
               }}
             >
-              <option disabled > Select Country</option>
+              <option disabled> Select Country</option>
               {returnCountryList().map((value, i) => (
                 <option value={value} key={i}>
                   {value}
@@ -331,11 +361,10 @@ function Charts(props) {
               Add to Graph
             </button>
           </form>
-         
+
           {handleTypes()}
-        
-       
-          <div class = 'cover'> Select to remove: {showCurrentCountries()}</div>
+
+          <div className="cover"> Select to remove: {showCurrentCountries()}</div>
         </>
       );
     }
@@ -348,7 +377,7 @@ function Charts(props) {
 
   function removeFromList(toDelete) {
     var index = countryList.indexOf(toDelete);
-    console.log(index);
+  
     if (index !== -1) {
       countryList.splice(index, 1);
     }
@@ -356,13 +385,13 @@ function Charts(props) {
   }
 
   function showCurrentCountries() {
-    {
-      return countryList.map((each) => (
-        <span className="displayedList" onClick={() => removeFromList(each)}>
+    
+      return countryList.map((each) => ( 
+        <span key = {each} className="displayedList" onClick={() => removeFromList(each)}>
           {each}{" "}
         </span>
       ));
-    }
+    
   }
 
   return loading ? (

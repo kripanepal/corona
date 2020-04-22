@@ -11,7 +11,7 @@ function Main() {
   var [search, setSearch] = useState("");
   const [type, setType] = useState("desc");
   useEffect(() => {
-    fetch("https://corona.lmao.ninja/v2/states?sort=cases")
+    fetch("https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/states?sort=cases", { headers: { accept: "Accept: application/json" } })
       .then((res) => res.json())
       .then((data) => {
         setLatest(data);
@@ -88,14 +88,13 @@ function Main() {
     let isNewDeath = "";
     let deathSign = "";
     if (data.todayDeaths !== 0) {
-      console.log(data.todayDeaths)
+
       isNewDeath = "danger";
       deathSign = "+";
     }
     let isNewCases = "";
     let casesSign = "";
     if (data.todayCases !== 0) {
-      console.log(data.todayCases)
       casesSign = "+";
       isNewCases = "casesNew";
     }

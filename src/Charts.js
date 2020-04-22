@@ -31,7 +31,7 @@ function Charts(props) {
   var lastDate;
 
   useEffect(() => {
-    fetch(`https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`, { headers: { accept: "Accept: application/json" } })
+    fetch(`https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`, { headers: { accept: "Accept: application/json" } })
       .then((res) => res.json())
       .then((data) => {
         setTest(data);

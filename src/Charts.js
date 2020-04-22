@@ -304,9 +304,9 @@ function Charts(props) {
   }
 
   function changeDays(event) {
-    if (event.which === 13) {
+    
       setNumdays(event.target.value);
-    }
+    
   }
 
   function handleTypes() {
@@ -338,11 +338,11 @@ function Charts(props) {
               max="200"
               placeholder={numDays}
               style={{ width: 50 }}
-              onKeyPress={changeDays}
+              onChange={changeDays}
             />
           </form>
         </>
-      );
+      )
     }
 
     return (
@@ -360,7 +360,7 @@ function Charts(props) {
             max="200"
             placeholder={numDays}
             style={{ width: 50 }}
-            onKeyPress={changeDays}
+            onInput={changeDays}
           />
         </form>
       </>

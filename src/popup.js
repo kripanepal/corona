@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import Charts from "./Charts";
 import USA from "./usastates";
 import "./pop.css";
+import './App.css'
+import USACHARTS from './usastatescharts'
 
 function Popup(props) {
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
 
-  if (props.name === "USA") {
+  if (props.type === "state") {
+
     return(
     <>
       <span style={{ cursor: "pointer" }} onClick={handleShow}>
@@ -29,7 +32,7 @@ function Popup(props) {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <USA />
+        <USACHARTS name = {props.name}/>
         </Modal.Body>
       </Modal>
     </>);

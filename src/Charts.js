@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
-import Components from "react";
 import "./App.css";
 import "./charts.css";
 import Spinner from "react-bootstrap/Spinner";
+import "./charts.css";
 
 import {
-  LineChart,Bar,BarChart,Pie,PieChart,Area,AreaChart,ComposedChart,
+  LineChart,
+  Bar,
+  BarChart,
+  Pie,
+  PieChart,
+  Area,
+  AreaChart,
+  ComposedChart,
   Line,
   CartesianGrid,
   XAxis,
@@ -31,7 +38,10 @@ function Charts(props) {
   var lastDate;
 
   useEffect(() => {
-    fetch(`https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`, { headers: { accept: "Accept: application/json" } })
+    fetch(
+      `https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`,
+      { headers: { accept: "Accept: application/json" } }
+    )
       .then((res) => res.json())
       .then((data) => {
         setTest(data);
@@ -75,10 +85,10 @@ function Charts(props) {
         for (let i = 0; i < dates.length; i++) {
           if (first) {
             var n = dates[i].lastIndexOf("/");
-            casesArray[i]["date"] = dates[i].substring(0,n);
-            deathsArray[i]["date"] = dates[i].substring(0,n);
-            recoveredArray[i]["date"] = dates[i].substring(0,n);
-            console.log(dates[i])
+            casesArray[i]["date"] = dates[i].substring(0, n);
+            deathsArray[i]["date"] = dates[i].substring(0, n);
+            recoveredArray[i]["date"] = dates[i].substring(0, n);
+
             lastDate = dates[i];
           }
 
@@ -112,47 +122,46 @@ function Charts(props) {
 
   function returnLines() {
     var temp;
-    function what()
-     {
-       if(graphType==='Line')
-       {
+    function what() {
+      if (graphType === "Line") {
+        return Line;
+      }
 
-        return Line
-       }
+      if (graphType === "Bar") {
+        return Bar;
+      }
 
-       if(graphType==='Bar')
-       {
- 
-        return Bar
-       }
+      if (graphType === "Area") {
+        return Area;
+      }
 
-       if(graphType==='Area')
-       {
-   
-        return Area
-       }
-    
-       if(graphType==='AreaLineComposed')
-       {
-   
-        return 
-       }
-     }
- 
-      var TestGraph = what();
+      if (graphType === "AreaLineComposed") {
+        return;
+      }
+    }
+
+    var TestGraph = what();
     if (countryList.length === 1) {
       temp = (
         <TestGraph
           dataKey={countryList[0]}
           stroke={stringToColour(countryList[0])}
           fill={stringToColour(countryList[0])}
-          dot={false} 
+          dot={false}
         />
       );
     }
     if (countryList.length > 1) {
       temp = countryList.map((each) => {
-        return <TestGraph key={each} dataKey={each} stroke={stringToColour(each)} fill={stringToColour(each)} dot={false} />;
+        return (
+          <TestGraph
+            key={each}
+            dataKey={each}
+            stroke={stringToColour(each)}
+            fill={stringToColour(each)}
+            dot={false}
+          />
+        );
       });
     }
 
@@ -174,37 +183,26 @@ function Charts(props) {
 
   function renderLineChart() {
     var width;
-    function what()
-     {
-       if(graphType==='Line')
-       {
-   
-        return LineChart
-       }
+    function what() {
+      if (graphType === "Line") {
+        return LineChart;
+      }
 
-       if(graphType==='Bar')
-       {
-   
-        return BarChart
-       }
-       if(graphType==='Area')
-       {
-   
-        return AreaChart
-       }
-       if(graphType==='Pie')
-       {
-   
-        return PieChart
-       }
-       if(graphType==='AreaLineComposed')
-       {
-   
-        return ComposedChart
-       }
-     }
- 
-      var TestGraph = what();
+      if (graphType === "Bar") {
+        return BarChart;
+      }
+      if (graphType === "Area") {
+        return AreaChart;
+      }
+      if (graphType === "Pie") {
+        return PieChart;
+      }
+      if (graphType === "AreaLineComposed") {
+        return ComposedChart;
+      }
+    }
+
+    var TestGraph = what();
     if (props.from === "small") {
       width = "120%";
     }
@@ -212,17 +210,16 @@ function Charts(props) {
     if (!showAll) {
       var current = testing("confirmed");
 
- 
-
+      var toShow = currentType.charAt(0).toUpperCase() + currentType.slice(1);
 
       return (
         <div className="graphs">
           <div>
             {" "}
-            <h3>{currentType} </h3>
+            <h3>{toShow} </h3>
             <ResponsiveContainer width={width} height={400}>
               <TestGraph data={current}>
-                <CartesianGrid strokeDasharray="3 3"/>
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
@@ -244,7 +241,7 @@ function Charts(props) {
           <h3>Confirmed </h3>
           <ResponsiveContainer width="95%" height={400}>
             <TestGraph data={testing("confirmed")} syncId="anyId">
-              <CartesianGrid strokeDasharray="3 3"/>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
               <Tooltip />
@@ -304,9 +301,7 @@ function Charts(props) {
   }
 
   function changeDays(event) {
-    
-      setNumdays(event.target.value);
-    
+    setNumdays(event.target.value);
   }
 
   function handleTypes() {
@@ -329,7 +324,7 @@ function Charts(props) {
               {temporary()}
             </button>
           </form>
-         
+
           <form onSubmit={(e) => e.preventDefault()}>
             Number of days:
             <input
@@ -342,12 +337,11 @@ function Charts(props) {
             />
           </form>
         </>
-      )
+      );
     }
 
     return (
       <>
-
         {" "}
         <button type="button" onClick={(e) => show3(e)}>
           {temporary()}
@@ -404,7 +398,6 @@ function Charts(props) {
               ))}
             </select>
             {secondList()}
-     
           </form>
 
           {handleTypes()}
@@ -423,29 +416,32 @@ function Charts(props) {
     return temporary;
   }
 
-  function secondList()
-  {
-    console.log(countryList.length)
-    if(countryList.length!==0)
-    {
-      return       <> <select
-      className="selectList"
-      name="country"
-      onChange={(e) => {
-        setToBeAdded(e.target.value);
-      }}
-    >
-      <option checked> Select Country</option>
-      {returnCountryList().map((value, i) => (
-        <option value={value} key={i}>
-          {value}
-        </option>
-      ))}
-      ))}
-    </select>
-    <button type="button" onClick={(e) => addToList(toBeAdded)}>
-      Add to Graph
-    </button></>
+  function secondList() {
+
+    if (countryList.length !== 0) {
+      return (
+        <>
+          {" "}
+          <select
+            className="selectList"
+            name="country"
+            onChange={(e) => {
+              setToBeAdded(e.target.value);
+            }}
+          >
+            <option checked> Select Country</option>
+            {returnCountryList().map((value, i) => (
+              <option value={value} key={i}>
+                {value}
+              </option>
+            ))}
+            ))}
+          </select>
+          <button type="button" onClick={(e) => addToList(toBeAdded)}>
+            Add to Graph
+          </button>
+        </>
+      );
     }
   }
 
@@ -471,7 +467,6 @@ function Charts(props) {
   }
 
   function displayGraphMenu() {
-
     function handleChange(e) {
       setGraphType(e.target.value);
     }

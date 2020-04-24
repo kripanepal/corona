@@ -10,6 +10,7 @@ import Charts from "./Charts";
 import "react-tabs/style/react-tabs.css";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
+import USA from './usastates'
 
 function App(props) {
   const [results, setResults] = useState([]);
@@ -21,7 +22,7 @@ function App(props) {
   const [url] = useState(props.name);
 
   useEffect(() => {
-    fetch(url + "?sort=cases")
+    fetch('https://cors-anywhere.herokuapp.com/'+url + "?sort=cases", { headers: { accept: "Accept: application/json" } })
       .then((res) => res.json())
       .then((data) => {
         setResults(data);
@@ -365,14 +366,22 @@ function App(props) {
           </Tab>
           <Tab>
             {" "}
+            <Button variant="info">USA States</Button>
+          </Tab>
+          <Tab>
+            {" "}
             <Button variant="info">Graphs</Button>
           </Tab>
+         
         </TabList>
   
         <TabPanel>{table()}</TabPanel>
+        <TabPanel><USA /></TabPanel>
         <TabPanel>
           <Charts name="USA" />
         </TabPanel>
+        
+        
       </Tabs>
     );
     return tabs;
@@ -388,6 +397,7 @@ function App(props) {
       <Spinner animation="grow" variant="warning" />
     </div>
   ) : (
+    
     <div className="whole">{tabs()}</div>
   );
 }

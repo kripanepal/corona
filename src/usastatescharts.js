@@ -69,6 +69,11 @@ function USACharts(props) {
 
   function returnLines(type) {
     var temp;
+    var color = "red";
+    if(type==='cases')
+    {
+      color = 'blue'
+    }
     function what() {
       if (graphType === "Line") {
         return Line;
@@ -92,8 +97,8 @@ function USACharts(props) {
     temp = (
       <TestGraph
         dataKey={type}
-        stroke={stringToColour(currentGraph)}
-        fill={stringToColour(currentGraph)}
+        stroke={color}
+        fill={color}
         dot={false}
       />
     );
@@ -101,18 +106,6 @@ function USACharts(props) {
     return temp;
   }
 
-  var stringToColour = function (str) {
-    var hash = 0;
-    for (var i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    var colour = "#";
-    for (var j = 0; j < 3; j++) {
-      var value = (hash >> (j * 8)) & 0xff;
-      colour += ("00" + value.toString(16)).substr(-2);
-    }
-    return colour;
-  };
 
   function renderLineChart() {
     var width;

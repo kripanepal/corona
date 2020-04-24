@@ -1,7 +1,7 @@
 import Modal from "react-bootstrap/Modal";
 import React, { useState } from "react";
 import Charts from "./Charts";
-import USA from "./usastates";
+
 import "./pop.css";
 import './App.css'
 import USACHARTS from './usastatescharts'

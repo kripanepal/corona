@@ -309,24 +309,35 @@ function Charts(props) {
       return (
         <>
           <form>
-            <label> Select Graph for </label>
-            <select
-              name="type"
-              value={currentType}
+            <input
+              type="radio"
+              value="confirmed"
+              checked={currentType == "confirmed"}
               onChange={handleType}
-              className="selectList"
-            >
-              <option value="confirmed">Confirmed</option>
-              <option value="deaths"> Deaths</option>
-              <option value="recovered"> Recovered</option>
-            </select>
+              name="type"
+            />
+            Confirmed{"  "}
+            <input
+              type="radio"
+              value="deaths"
+              onChange={handleType}
+              name="type"
+            />
+            Deaths{"  "}
+            <input
+              type="radio"
+              value="recovered"
+              onChange={handleType}
+              name="type"
+            />
+            Recovered{"  "}
             <button type="button" onClick={(e) => show3(e)}>
               {temporary()}
             </button>
           </form>
 
           <form onSubmit={(e) => e.preventDefault()}>
-            Number of days:
+          
             <input
               type="number"
               min="0"
@@ -334,7 +345,7 @@ function Charts(props) {
               placeholder={numDays}
               style={{ width: 50 }}
               onChange={changeDays}
-            />
+            /> days
           </form>
         </>
       );
@@ -347,7 +358,7 @@ function Charts(props) {
           {temporary()}
         </button>
         <form onSubmit={(e) => e.preventDefault()}>
-          Number of days:
+         
           <input
             type="number"
             min="0"
@@ -355,7 +366,7 @@ function Charts(props) {
             placeholder={numDays}
             style={{ width: 50 }}
             onInput={changeDays}
-          />
+          /> days 
         </form>
       </>
     );
@@ -417,7 +428,6 @@ function Charts(props) {
   }
 
   function secondList() {
-
     if (countryList.length !== 0) {
       return (
         <>

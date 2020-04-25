@@ -1,0 +1,15 @@
+.marker
+{
+    text-align: center;
+    width:30px;
+    height:25px;
+    text-align: center;
+    background-color: white;
+    border-radius: 30%;
+    color: red;
+}
+
+.flag
+{
+    width:20px;
+}

@@ -10,7 +10,8 @@ import Charts from "./Charts";
 import "react-tabs/style/react-tabs.css";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
-import USA from './usastates'
+import USA from './usastates';
+import Map from './map';
 
 function App(props) {
   const [results, setResults] = useState([]);
@@ -360,13 +361,18 @@ function App(props) {
     const tabs = (
       <Tabs className="tabs">
         <TabList>
+
           <Tab>
             {" "}
             <Button variant="primary"> All countries </Button>
           </Tab>
           <Tab>
             {" "}
-            <Button variant="info">USA States</Button>
+            <Button variant="warning">World Map</Button>
+          </Tab>
+          <Tab>
+            {" "}
+            <Button variant="secondary">USA States</Button>
           </Tab>
           <Tab>
             {" "}
@@ -374,12 +380,14 @@ function App(props) {
           </Tab>
          
         </TabList>
-  
+     
         <TabPanel>{table()}</TabPanel>
+        <TabPanel><Map data = {results}/></TabPanel>
         <TabPanel><USA /></TabPanel>
         <TabPanel>
           <Charts name="USA" />
         </TabPanel>
+
         
         
       </Tabs>

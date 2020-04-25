@@ -4,6 +4,7 @@ import Spinner from "react-bootstrap/Spinner";
 import Table from "react-bootstrap/Table";
 import sort from "./sort.png";
 import Popup from "./popup";
+//import json from './usaAll.json'
 
 function Main() {
   let [latest, setLatest] = useState([]);
@@ -118,6 +119,7 @@ function Main() {
           </td>
           <td className={isNewCases}>
             {" "}
+            {casesSign}
             <NumberFormat
               value={data.todayCases}
               displayType={"text"}
@@ -126,7 +128,7 @@ function Main() {
           </td>
 
           <td className="datas">
-            {casesSign}
+            
 
             <NumberFormat
               value={data.deaths}

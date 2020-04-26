@@ -12,6 +12,7 @@ import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import USA from './usastates';
 import Map from './map';
+import Header from './header'
 
 function App(props) {
   const [results, setResults] = useState([]);
@@ -381,7 +382,7 @@ function App(props) {
          
         </TabList>
      
-        <TabPanel>{table()}</TabPanel>
+        <TabPanel><Header/><br/> {table()}</TabPanel>
         <TabPanel><Map data = {results}/></TabPanel>
         <TabPanel><USA /></TabPanel>
         <TabPanel>

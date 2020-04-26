@@ -1,12 +1,11 @@
 import React from 'react'
 import App from './App';
-import Header from'./header'
+
 
 
 function main(props) {
     return (
         <div>
-            <Header className = 'header'/>
             <App name="https://corona.lmao.ninja/v2/countries"/>
         </div>
     )

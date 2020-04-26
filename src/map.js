@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import GoogleMapReact from "google-map-react";
 import "./map.css";
+import Popup from "./popup";
 function Map(props) {
   const [data, setData] = useState(props.data);
   const [loading, setLoading] = useState(true);
-  const key = "AIzaSyDU_NJQ-CJfd_KHcSxi9SuTAk3lO_B7jYg";
+  const key = "API key here";
   var [lati, setLeti] = useState();
   var [lngi, setLngi] = useState();
   var [type, setType] = useState("cases");
@@ -44,6 +45,7 @@ function Map(props) {
         lat={each.countryInfo.lat}
         lng={each.countryInfo.long}
       >
+         <Popup name={each.country} from={"small"} type = "map" />
         <img className="flag" src={each.countryInfo.flag} alt="country image" />
         <br />
         {each[type]}
@@ -51,19 +53,36 @@ function Map(props) {
     );
   });
 
-  var form = <> <input type = "radio"  value = "cases"  onChange = {handleChange}checked ={type=="cases"} /> Cases <span>  </span>
-  <input type = "radio" name = "type" value = "deaths" onChange = {handleChange} />Deaths<span>  </span>
-  <input type = "radio" name = "type" value = "recovered"  onChange = {handleChange}/>Recovered</>
+  var form = (
+    <>
+      {" "}
+      <input
+        type="radio"
+        value="cases"
+        onChange={handleChange}
+        checked={type == "cases"}
+      />{" "}
+      Cases <span> </span>
+      <input type="radio" name="type" value="deaths" onChange={handleChange} />
+      Deaths<span> </span>
+      <input
+        type="radio"
+        name="type"
+        value="recovered"
+        onChange={handleChange}
+      />
+      Recovered
+    </>
+  );
 
-function handleChange(e)
-{
-  setType(e.target.value)
-}
+  function handleChange(e) {
+    setType(e.target.value);
+  }
   if (!loading) {
     return (
       <>
         <div>
-        {form}
+          {form}
           <div style={{ height: "100vh", width: "100%" }}>
             <GoogleMapReact
               bootstrapURLKeys={{ key: key }}

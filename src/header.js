@@ -10,7 +10,7 @@ function Main() {
   let [latest, setLatest] = useState([]);
   let [loading, setLoading] = useState(true);
   useEffect( () => {
-    fetch("https://corona.lmao.ninja/v2/all")
+    fetch("https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/all")
       .then((res) => res.json())
       .then((data) => {
         setLatest(data);

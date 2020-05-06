@@ -24,12 +24,12 @@ function App(props) {
   const [url] = useState(props.name);
 
   useEffect(() => {
-    fetch('https://cors-anywhere.herokuapp.com/'+url + "?sort=cases", { headers: { accept: "Accept: application/json" } })
+    fetch(''+url + "?sort=cases", { headers: { accept: "Accept: application/json" } })
       .then((res) => res.json())
       .then((data) => {
         setResults(data);
         setFinalResults(data);
-
+        console.log('aaaaaaa')
         setIsloading(false);
       });
   }, [url]);

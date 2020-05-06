@@ -21,7 +21,7 @@ function Main() {
       .then((data) => {
         setLatest(data);
         setResults(data);
-
+        console.log('aa')
         setLoading(false);
       });
   }, []);

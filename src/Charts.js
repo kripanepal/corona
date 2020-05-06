@@ -39,13 +39,14 @@ function Charts(props) {
 
   useEffect(() => {
     fetch(
-      `https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`,
+      `https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`,
       { headers: { accept: "Accept: application/json" } }
+      
     )
       .then((res) => res.json())
       .then((data) => {
         setTest(data);
-
+        console.log('aaaaaaa')
         setLoading(false);
         var search = props.name;
         if (props.from === "small") {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import CardDeck from "react-bootstrap/CardDeck";
 import Card from "react-bootstrap/Card";
 import "bootstrap/dist/css/bootstrap.min.css";
-import NumberFormat from "react-number-format";
+import NumberFormat from "react-countup";
 import Spinner from "react-bootstrap/Spinner";
 
 
@@ -10,11 +10,11 @@ function Main() {
   let [latest, setLatest] = useState([]);
   let [loading, setLoading] = useState(true);
   useEffect( () => {
-    fetch("https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/all")
+    fetch("https://corona.lmao.ninja/v2/all")
       .then((res) => res.json())
       .then((data) => {
         setLatest(data);
-
+        console.log('aaaaaaa')
         setLoading(false);
       });
   }, []);
@@ -37,9 +37,9 @@ function Main() {
               <Card.Title>Cases</Card.Title>
               <Card.Text>
                 <NumberFormat
-                  value={latest.cases}
-                  displayType={"text"}
-                  thousandSeparator={true}
+                  end={latest.cases}
+                  duration={1.5}
+                  separator={","}
                 />
               </Card.Text>
             </Card.Body>
@@ -53,9 +53,9 @@ function Main() {
               <Card.Text>
                 {" "}
                 <NumberFormat
-                  value={latest.deaths}
-                  displayType={"text"}
-                  thousandSeparator={true}
+                  end={latest.deaths}
+                  duration={1.5}
+                  separator={","}
                 />
               </Card.Text>
             </Card.Body>
@@ -74,9 +74,9 @@ function Main() {
               <Card.Text>
                 {" "}
                 <NumberFormat
-                  value={latest.recovered}
-                  displayType={"text"}
-                  thousandSeparator={true}
+                  end={latest.recovered}
+                  duration={1.5}
+                  separator={","}
                 />
               </Card.Text>
             </Card.Body>

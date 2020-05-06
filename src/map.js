@@ -5,7 +5,7 @@ import Popup from "./popup";
 function Map(props) {
   const [data, setData] = useState(props.data);
   const [loading, setLoading] = useState(true);
-  const key = "API key here";
+  const key = "AIzaSyDU_NJQ-CJfd_KHcSxi9SuTAk3lO_B7jYg";
   var [lati, setLeti] = useState();
   var [lngi, setLngi] = useState();
   var [type, setType] = useState("cases");

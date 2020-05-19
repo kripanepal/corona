@@ -37,8 +37,8 @@ function Charts(props) {
   useEffect(() => {
     var toFetch = `https://disease.sh/v2/historical/${search}?lastdays=${numDays}`;
     if (window.location.pathname.includes("state")) {
-      console.log(props.name);
-      toFetch = `https://disease.sh/v2/historical/usacounties/${search}`;
+        var temp = search.toLowerCase()
+      toFetch = `https://disease.sh/v2/historical/usacounties/${temp}`;
     }
     fetch(toFetch)
       .then((res) => res.json())

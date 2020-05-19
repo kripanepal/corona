@@ -163,7 +163,7 @@ function App(props) {
   }
 
   function handleChange(col) {
-    console.log(col)
+    
     function compare(a, b) {
       
       const bandA = a[col];

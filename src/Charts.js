@@ -3,6 +3,7 @@ import "./App.css";
 import "./charts.css";
 import Spinner from "react-bootstrap/Spinner";
 import "./charts.css";
+import Select from "react-select";
 
 import {
   LineChart,
@@ -38,15 +39,13 @@ function Charts(props) {
   var lastDate;
 
   useEffect(() => {
-    fetch(
-      `https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`,
-      { headers: { accept: "Accept: application/json" } }
-      
-    )
+    fetch(`https://corona.lmao.ninja/v2/historical?lastdays=${numDays}`, {
+      headers: { accept: "Accept: application/json" },
+    })
       .then((res) => res.json())
       .then((data) => {
         setTest(data);
-        console.log('aaaaaaa')
+        console.log("aaaaaaa");
         setLoading(false);
         var search = props.name;
         if (props.from === "small") {
@@ -287,87 +286,34 @@ function Charts(props) {
       </div>
     );
   }
-  function handleList(e) {
-    removeFromList(currentGraph);
-    setCountryList([...countryList, e.target.value]);
-    setCurrentGraph(e.target.value);
-  }
-
-  function handleType(e) {
-    setCurrenType(e.target.value);
-  }
-
-  function show3() {
-    showAll ? setShowAll(false) : setShowAll(true);
-  }
 
   function changeDays(event) {
     setNumdays(event.target.value);
   }
 
   function handleTypes() {
-    if (!showAll) {
-      return (
-        <>
-          <form>
-            <input
-              type="radio"
-              value="confirmed"
-              checked={currentType == "confirmed"}
-              onChange={handleType}
-              name="type"
-            />
-            Confirmed{"  "}
-            <input
-              type="radio"
-              value="deaths"
-              onChange={handleType}
-              name="type"
-            />
-            Deaths{"  "}
-            <input
-              type="radio"
-              value="recovered"
-              onChange={handleType}
-              name="type"
-            />
-            Recovered{"  "}
-            <button type="button" onClick={(e) => show3(e)}>
-              {temporary()}
-            </button>
-          </form>
-
-          <form onSubmit={(e) => e.preventDefault()}>
-          
-            <input
-              type="number"
-              min="0"
-              max="200"
-              placeholder={numDays}
-              style={{ width: 50 }}
-              onChange={changeDays}
-            /> days
-          </form>
-        </>
-      );
-    }
-
     return (
       <>
-        {" "}
-        <button type="button" onClick={(e) => show3(e)}>
-          {temporary()}
-        </button>
-        <form onSubmit={(e) => e.preventDefault()}>
-         
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
+          <select onChange={handleType}>
+            <option value="confirmed"> Confirmed</option>
+            <option value="recovered"> Recovered</option>
+            <option value="deaths"> Deaths</option>
+            <option value="all"> All</option>
+          </select>{" "}
           <input
             type="number"
             min="0"
             max="200"
-            placeholder={numDays}
-            style={{ width: 50 }}
-            onInput={changeDays}
-          /> days 
+            placeholder={numDays + " days"}
+            style={{ width: 90 }}
+            onChange={changeDays}
+          />{" "}
+          {dropdown0}
         </form>
       </>
     );
@@ -382,120 +328,71 @@ function Charts(props) {
     return Array.from(again);
   }
 
-  function addToList(toadd) {
-    if (countryList.includes(toadd + "")) {
+  function handleList(opt) {
+    console.log(opt);
+    setCountryList([]);
+    var a = [];
+    opt.map((each) => {
+      a.push(each.value);
+    });
+    console.log(a);
+    setCountryList(a);
+  }
+
+  function handleType(e) {
+    if (e.target.value === "all") {
+      setShowAll(true);
     } else {
-      setCountryList((old) => [...old, toadd]);
+      setShowAll(false);
+      setCurrenType(e.target.value);
     }
   }
 
   function isFrom() {
-    if (props.from !== "small") {
-      return (
-        <>
-          <form onSubmit={(e) => e.preventDefault}>
-            <label>Country:</label>
-
-            <select
-              value={currentGraph}
-              onChange={handleList}
-              className="selectList"
-            >
-              <option disabled>Select Country to compare</option>
-              {returnCountryList().map((value, i) => (
-                <option value={value} key={i}>
-                  {value}
-                </option>
-              ))}
-              ))}
-            </select>
-            {secondList()}
-          </form>
-
-          {handleTypes()}
-          {displayGraphMenu()}
-          <div className="cover">
-            {" "}
-            Click to remove: {showCurrentCountries()}
-          </div>
-        </>
-      );
-    }
-    return handleTypes();
-  }
-  function temporary() {
-    var temporary = showAll ? "Show confirmed" : "Show All";
-    return temporary;
-  }
-
-  function secondList() {
-    if (countryList.length !== 0) {
-      return (
-        <>
-          {" "}
-          <select
-            className="selectList"
-            name="country"
-            onChange={(e) => {
-              setToBeAdded(e.target.value);
-            }}
-          >
-            <option checked> Select Country</option>
-            {returnCountryList().map((value, i) => (
-              <option value={value} key={i}>
-                {value}
-              </option>
-            ))}
-            ))}
-          </select>
-          <button type="button" onClick={(e) => addToList(toBeAdded)}>
-            Add to Graph
-          </button>
-        </>
-      );
-    }
-  }
-
-  function removeFromList(toDelete) {
-    var index = countryList.indexOf(toDelete);
-
-    if (index !== -1) {
-      countryList.splice(index, 1);
-    }
-    setCountryList([...countryList]);
-  }
-
-  function showCurrentCountries() {
-    return countryList.map((each) => (
-      <span
-        key={each}
-        className="displayedList"
-        onClick={() => removeFromList(each)}
-      >
-        {each}{" "}
-      </span>
-    ));
-  }
-
-  function displayGraphMenu() {
-    function handleChange(e) {
-      setGraphType(e.target.value);
-    }
-
-    var dropdown0 = (
+    return (
       <>
-        <select onChange={handleChange}>
-          <option value={"Line"}> Line</option>
-          <option value={"Bar"}> Bar</option>
-          <option value={"Area"}> Area</option>
-
-          {/* <option value={"Composed"}> Composed</option> */}
-        </select>
+        <br />
+        Select countries to add to the graph:
+        <form onSubmit={(e) => e.preventDefault}>
+          <Select
+            isMulti
+            onChange={(opt) => {
+              handleList(opt);
+            }}
+            onInputChange={() => {
+              console.log("tara");
+            }}
+            options={returnCountryList().map((value, i) => ({
+              label: value,
+              key: i,
+              value: value,
+            }))}
+          />
+        </form>
+        {handleTypes()}
       </>
     );
-
-    return <form>Graph type: {dropdown0}</form>;
   }
+
+  function handleChange(e) {
+    setGraphType(e.target.value);
+  }
+
+  var dropdown0 = (
+    <>
+      <select onChange={handleChange}>
+        <option defaultChecked disabled>
+          {" "}
+          Graph type
+        </option>
+        <option value={"Line"}> Line graph</option>
+        <option value={"Bar"}> Bar graph</option>
+        <option value={"Area"}> Area graph</option>
+
+        {/* <option value={"Composed"}> Composed</option> */}
+      </select>
+    </>
+  );
 
   return loading ? (
     <div className="spinners">

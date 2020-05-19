@@ -33,7 +33,7 @@ function USACharts(props) {
 
   useEffect(() => {
     fetch(
-      `https://cors-anywhere.herokuapp.com/https://corona.lmao.ninja/v2/nyt/states`,
+      `https://corona.lmao.ninja/v2/nyt/states`,
       { headers: { accept: "Accept: application/json" } }
     )
       .then((res) => res.json())

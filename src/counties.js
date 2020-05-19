@@ -4,8 +4,8 @@ import Spinner from "react-bootstrap/Spinner";
 import Table from "react-bootstrap/Table";
 import sort from "./sort.png";
 import Popup from "./popup";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
+import Header from "./header";
+//import json from './usaAll.json'
 
 function Main() {
   let [latest, setLatest] = useState([]);
@@ -13,17 +13,26 @@ function Main() {
   let [loading, setLoading] = useState(true);
   var [search, setSearch] = useState("");
   const [type, setType] = useState("desc");
+  var search = decodeURI(window.location.pathname.split("/").pop() + "");
+
   useEffect(() => {
-    fetch(
-      "https://corona.lmao.ninja/v2/states?sort=cases",
-      { headers: { accept: "Accept: application/json" } }
-    )
+    fetch("https://disease.sh/v2/jhucsse/counties", {
+      headers: { accept: "Accept: application/json" },
+    })
       .then((res) => res.json())
       .then((data) => {
-        setLatest(data);
-        setResults(data);
-        console.log('aa')
+        console.log("aa");
         setLoading(false);
+
+        const tolook = data.filter((each) => {
+
+          return each.province === search;
+        });
+
+        setResults(tolook);
+        setLatest(tolook);
+
+        
       });
   }, []);
 
@@ -31,7 +40,7 @@ function Main() {
     setSearch(event.target.value);
 
     const filtered = latest.filter((each) => {
-      return each.state
+      return each.county
         .toUpperCase()
         .startsWith(event.target.value.toUpperCase());
     });
@@ -56,9 +65,19 @@ function Main() {
   }
 
   function handleChange(col) {
+
     function compare(a, b) {
-      const bandA = a[col];
-      const bandB = b[col];
+      var bandA;
+      var bandB;
+      if (col !== "county") {
+        bandA = a["stats"][col];
+        bandB = b["stats"][col];
+      } else {
+        bandA = a[col];
+        bandB = b[col];
+      }
+
+
 
       if (type !== "asc") {
         let comparison = 0;
@@ -88,85 +107,40 @@ function Main() {
   }
 
   function countries() {
-    const countries = results.map((data, i) => {
-      let isNewDeath = "";
-      let deathSign = "";
-      if (data.todayDeaths !== 0) {
-        isNewDeath = "danger";
-        deathSign = "+";
-      }
-      let isNewCases = "";
-      let casesSign = "";
-      if (data.todayCases !== 0) {
-        casesSign = "+";
-        isNewCases = "casesNew";
-      }
 
+    if (results.length === 0) {
+        return <tr>
+            <td  colSpan="4">No Data Available</td>
+        </tr>
+      }
+    const counties = results.map((data, i) => {
       return (
         <tr key={i}>
-          <td className="country">
+          <td className="county">
             <span style={{ height: `100%` }}>
               {" "}
-              <Link to={`/USA/state/`+data.state} > {data.state} </Link>
+              <Popup name={data.county} type="state" from={"small"} />
             </span>
           </td>
           <td>
             {" "}
             <NumberFormat
-              value={data.cases}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </td>
-          <td className={isNewCases}>
-            {" "}
-            {casesSign}
-            <NumberFormat
-              value={data.todayCases}
+              value={data.stats.confirmed}
               displayType={"text"}
               thousandSeparator={true}
             />
           </td>
 
           <td className="datas">
-            
-
             <NumberFormat
-              value={data.deaths}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </td>
-          <td className={isNewDeath}>
-            {" "}
-            {deathSign}
-            <NumberFormat
-              value={data.todayDeaths}
+              value={data.stats.deaths}
               displayType={"text"}
               thousandSeparator={true}
             />
           </td>
           <td className="datas">
-            {" "}
             <NumberFormat
-              value={data.active}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </td>
-          <td className="datas">
-            {" "}
-            <NumberFormat
-              value={data.tests}
-              displayType={"text"}
-              thousandSeparator={true}
-            />
-          </td>
-
-          <td className="datas">
-            {" "}
-            <NumberFormat
-              value={data.testsPerOneMillion}
+              value={data.stats.recovered}
               displayType={"text"}
               thousandSeparator={true}
             />
@@ -174,22 +148,17 @@ function Main() {
         </tr>
       );
     });
-    return countries;
+    return counties;
   }
 
   function table() {
     const table = (
       <>
-       <br/>
+      <br/>
         <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
           <label>
             Search:
-            <input
-              onChange={handleSearch}
-              type="text"
-              name="searching"
-              value={search}
-            />
+            <input onChange={handleSearch} type="text" name="searching" />
           </label>
         </form>
         <div style={{ overflow: "scrollable" }}>
@@ -204,10 +173,10 @@ function Main() {
             <thead>
               <tr>
                 <th>
-                  State
+                  County
                   <span
                     onClick={() => {
-                      handleChange("state");
+                      handleChange("county");
                     }}
                   >
                     {image()}
@@ -217,70 +186,28 @@ function Main() {
                   Total cases
                   <span
                     onClick={() => {
-                      handleChange("cases");
+                      handleChange("confirmed");
                     }}
                   >
                     {image()}
                   </span>
                 </th>
-                <th>
-                  New Cases
-                  <span
-                    onClick={() => {
-                      handleChange("todayCases");
-                    }}
-                  >
-                    {image()}
-                  </span>
-                </th>
+
                 <th>
                   Deaths
                   <span
                     onClick={() => {
-                      handleChange("deaths");
+                      handleChange("confirmed");
                     }}
                   >
                     {image()}
                   </span>
                 </th>
                 <th>
-                  {" "}
-                  New Deaths
+                  Recovered
                   <span
                     onClick={() => {
-                      handleChange("todayDeaths");
-                    }}
-                  >
-                    {image()}
-                  </span>
-                </th>
-                <th>
-                  {" "}
-                  Active
-                  <span
-                    onClick={() => {
-                      handleChange("active");
-                    }}
-                  >
-                    {image()}
-                  </span>
-                </th>
-                <th>
-                  {" "}
-                  Tests
-                  <span
-                    onClick={() => {
-                      handleChange("tests");
-                    }}
-                  >
-                    {image()}
-                  </span>
-                </th>
-                <th>
-                  Tests/1M
-                  <span
-                    onClick={() => {
-                      handleChange("testsPerOneMillion");
+                      handleChange("recovered");
                     }}
                   >
                     {image()}
@@ -310,7 +237,12 @@ function Main() {
       </div>
     );
   else {
-    return <>{show()}</>;
+    return (
+      <>
+        <Header />
+        {show()}
+      </>
+    );
   }
 }
 

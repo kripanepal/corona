@@ -5,16 +5,40 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import NumberFormat from "react-countup";
 import Spinner from "react-bootstrap/Spinner";
 
-
-function Main() {
+function Main(props) {
   let [latest, setLatest] = useState([]);
   let [loading, setLoading] = useState(true);
-  useEffect( () => {
-    fetch("https://corona.lmao.ninja/v2/all")
+  let [toShow, setToshow] = useState();
+  var search = decodeURI(window.location.pathname.split("/").pop());
+ 
+
+  useEffect(() => {
+    var toFetch;
+   
+    if (props.type === "main") {
+      console.log("main");
+      toFetch = "https://corona.lmao.ninja/v2/all";
+      setToshow("World Wide")
+      
+    }
+
+    if (window.location.pathname.includes("state")) {
+      console.log("satte");
+      toFetch = `https://disease.sh/v2/states/${search}`;
+      setToshow(search)
+   
+    }
+    if (window.location.pathname.includes("country")) {
+      console.log("country");
+      toFetch = `https://disease.sh/v2/countries/${search}?yesterday=false&strict=false`;
+      setToshow(search)
+
+    }
+    fetch(toFetch)
       .then((res) => res.json())
       .then((data) => {
         setLatest(data);
-        console.log('aaaaaaa')
+        console.log("aaaaaaa");
         setLoading(false);
       });
   }, []);
@@ -22,10 +46,10 @@ function Main() {
   function show() {
     const date = new Date(parseInt(latest.updated));
     const lastUpdated = date.toString();
-  
+  console.log(search)
     const header = (
       <div className="deckss">
-        <span className="worldWide">World Wide</span>
+        <span className="worldWide">{toShow}</span>
         <CardDeck className="deck">
           <Card
             bg={"secondary"}

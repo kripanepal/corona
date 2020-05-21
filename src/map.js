@@ -46,7 +46,7 @@ function Map(props) {
         lng={each.countryInfo.long}
       >
          <Popup name={each.country} from={"small"} type = "map" />
-        <img className="flag" src={each.countryInfo.flag} alt="country flag" />
+        <img className="flag" src={each.countryInfo.flag} alt="country image" />
         <br />
         {each[type]}
       </div>

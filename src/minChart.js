@@ -41,6 +41,11 @@ function Charts(props) {
       var temp = search.toLowerCase()
       toFetch = `https://disease.sh/v2/historical/usacounties/${temp}`;
     }
+   
+    if (window.location.pathname.includes("worldMap")) {
+      var temp = search.toLowerCase()
+      var toFetch = `https://disease.sh/v2/historical/${props.name}?lastdays=${numDays}`;
+    }
     fetch(toFetch)
       .then((res) => res.json())
       .then((data) => {
@@ -54,10 +59,10 @@ function Charts(props) {
           });
           console.log(temp);
           setTest(temp);
+
         } else {
           setTest(data);
         }
-
         setLoading(false);
       })
 
@@ -318,7 +323,7 @@ function Charts(props) {
     </>
   ) : (
         <div className="chartsNew">
-          <Header type={search} />
+          <Header type={search} name = {props.name} />
 
           {isFrom()}
 

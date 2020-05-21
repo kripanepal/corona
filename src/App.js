@@ -377,7 +377,7 @@ function App(props) {
      
     
             <Button variant="success"><Link className = "links" to = "/worldMap">World Map </Link></Button>{' '}
-          
+
            
             <Button variant="info"><Link className = "links"  to = "/graphs">Graphs </Link></Button>{' '}
          

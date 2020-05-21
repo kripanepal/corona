@@ -34,6 +34,12 @@ function Main(props) {
       setToshow(search)
 
     }
+    if (window.location.pathname.includes("worldMap")) {
+      console.log("country");
+      toFetch = `https://disease.sh/v2/countries/${props.name}?yesterday=false&strict=false`;
+      setToshow(search)
+
+    }
     fetch(toFetch)
       .then((res) => res.json())
       .then((data) => {
@@ -41,6 +47,7 @@ function Main(props) {
         console.log("aaaaaaa");
         setLoading(false);
       });
+      
   }, [props.type,search]);
 
   function show() {

@@ -9,7 +9,6 @@ import {
   LineChart,
   Bar,
   BarChart,
-  Pie,
   PieChart,
   Area,
   AreaChart,
@@ -25,12 +24,13 @@ import {
 
 function Charts(props) {
   const [loading, setLoading] = useState(true);
-  const [currentGraph, setCurrentGraph] = useState();
   const [currentType, setCurrenType] = useState("confirmed");
   const [showAll, setShowAll] = useState(false);
   const [numDays, setNumdays] = useState(30);
+  
+  const [log, setLog] = useState(<YAxis />);
 
-  const [toBeAdded, setToBeAdded] = useState(["USA"]);
+
   const [countryList, setCountryList] = useState(["USA"]);
 
   const [test, setTest] = useState([]);
@@ -47,12 +47,9 @@ function Charts(props) {
         setTest(data);
         console.log("aaaaaaa");
         setLoading(false);
-        var search = props.name;
         if (props.from === "small") {
-          setCurrentGraph(props.name);
           setCountryList([props.name]);
         }
-        setCurrentGraph(search);
       });
 
     // eslint-disable-next-line
@@ -221,7 +218,7 @@ function Charts(props) {
               <TestGraph data={current}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" />
-                <YAxis />
+                {log}
                 <Tooltip />
                 <Legend />
 
@@ -333,7 +330,7 @@ function Charts(props) {
     setCountryList([]);
     var a = [];
     opt.map((each) => {
-      a.push(each.value);
+      return a.push(each.value);
     });
     console.log(a);
     setCountryList(a);
@@ -391,7 +388,29 @@ function Charts(props) {
 
         {/* <option value={"Composed"}> Composed</option> */}
       </select>
+
+      <select onChange={
+        (e) => {
+         
+          if (e.target.value === "Linear") {
+            setLog(<YAxis />)
+          }
+          else {
+            setLog(<YAxis scale="log" domain={[0.01, 'auto']} allowDataOverflow />)
+
+          }
+        }
+
+      }>
+
+        <option value={"Linear"}> Linear</option>
+        <option value={"Log"}> Log</option>
+
+
+      </select>
+      {" "}
     </>
+
   );
 
   return loading ? (
@@ -405,12 +424,12 @@ function Charts(props) {
       <Spinner animation="grow" variant="info" />
     </div>
   ) : (
-    <div className="chartsNew">
-      {isFrom()}
+      <div className="chartsNew">
+        {isFrom()}
 
-      {renderLineChart()}
-    </div>
-  );
+        {renderLineChart()}
+      </div>
+    );
 }
 
 export default Charts;

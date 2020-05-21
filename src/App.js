@@ -4,8 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Table from "react-bootstrap/Table";
 import sort from "./sort.png";
 import NumberFormat from "react-number-format";
-import Popup from "./popup";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import MinCharts from "./minChart";
 import Charts from "./Charts";
 import "react-tabs/style/react-tabs.css";

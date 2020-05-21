@@ -10,23 +10,23 @@ function Main(props) {
   let [loading, setLoading] = useState(true);
   let [toShow, setToshow] = useState();
   var search = decodeURI(window.location.pathname.split("/").pop());
- 
+
 
   useEffect(() => {
     var toFetch;
-   
+
     if (props.type === "main") {
       console.log("main");
       toFetch = "https://corona.lmao.ninja/v2/all";
       setToshow("World Wide")
-      
+
     }
 
     if (window.location.pathname.includes("state")) {
       console.log("satte");
       toFetch = `https://disease.sh/v2/states/${search}`;
       setToshow(search)
-   
+
     }
     if (window.location.pathname.includes("country")) {
       console.log("country");
@@ -41,12 +41,20 @@ function Main(props) {
         console.log("aaaaaaa");
         setLoading(false);
       });
-  }, []);
+  }, [props.type,search]);
 
   function show() {
+    console.log("herrrrr")
+    if (!latest) {
+      console.log("---------------------")
+    }
     const date = new Date(parseInt(latest.updated));
     const lastUpdated = date.toString();
-  console.log(search)
+    console.log(search)
+    if(!latest.recovered)
+    {
+      latest.recovered=0
+    }
     const header = (
       <div className="deckss">
         <span className="worldWide">{toShow}</span>

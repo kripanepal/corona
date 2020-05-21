@@ -11,9 +11,8 @@ function Main() {
   let [latest, setLatest] = useState([]);
   let [results, setResults] = useState([]);
   let [loading, setLoading] = useState(true);
-  var [search, setSearch] = useState("");
   const [type, setType] = useState("desc");
-  var search = decodeURI(window.location.pathname.split("/").pop() + "");
+  var searching = decodeURI(window.location.pathname.split("/").pop() + "");
 
   useEffect(() => {
     fetch("https://disease.sh/v2/jhucsse/counties", {
@@ -26,7 +25,7 @@ function Main() {
 
         const tolook = data.filter((each) => {
 
-          return each.province === search;
+          return each.province === searching;
         });
 
         setResults(tolook);
@@ -34,10 +33,9 @@ function Main() {
 
         
       });
-  }, []);
+  }, [searching]);
 
   function handleSearch(event) {
-    setSearch(event.target.value);
 
     const filtered = latest.filter((each) => {
       return each.county
@@ -117,7 +115,7 @@ function Main() {
       return (
         <tr key={i}>
           <td className="county">
-            <span style={{ height: `100%` }}>
+            <span className = "link"style={{ height: `100%` }}>
               {" "}
               <Popup name={data.county} type="state" from={"small"} />
             </span>

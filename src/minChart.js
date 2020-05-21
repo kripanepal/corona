@@ -9,7 +9,7 @@ import {
   LineChart,
   Bar,
   BarChart,
-  Pie,
+  
   PieChart,
   Area,
   AreaChart,
@@ -25,6 +25,7 @@ import {
 
 function Charts(props) {
   const [loading, setLoading] = useState(true);
+  const [log, setLog] = useState(<YAxis/>);
 
   const [numDays, setNumdays] = useState(30);
 
@@ -37,7 +38,7 @@ function Charts(props) {
   useEffect(() => {
     var toFetch = `https://disease.sh/v2/historical/${search}?lastdays=${numDays}`;
     if (window.location.pathname.includes("state")) {
-        var temp = search.toLowerCase()
+      var temp = search.toLowerCase()
       toFetch = `https://disease.sh/v2/historical/usacounties/${temp}`;
     }
     fetch(toFetch)
@@ -46,10 +47,10 @@ function Charts(props) {
         if (window.location.pathname.includes("state")) {
           var here = data;
           var temp = here.filter((each) => {
-              var a = (props.name)+""
-              var b = (each.county)+""
- 
-            return (a.toUpperCase()===b.toUpperCase());
+            var a = (props.name) + ""
+            var b = (each.county) + ""
+
+            return (a.toUpperCase() === b.toUpperCase());
           });
           console.log(temp);
           setTest(temp);
@@ -58,7 +59,8 @@ function Charts(props) {
         }
 
         setLoading(false);
-      });
+      })
+
 
     // eslint-disable-next-line
   }, [numDays]);
@@ -73,6 +75,8 @@ function Charts(props) {
       historyData = test[0].timeline;
     }
 
+   
+
     var dates = Object.keys(historyData.cases);
     var cases = Object.values(historyData.cases);
     var deaths = Object.values(historyData.deaths);
@@ -86,7 +90,7 @@ function Charts(props) {
       }
     }
 
-    for (var i = 0; i < dates.length; i++) {
+    for (let i = 0; i < dates.length; i++) {
       if (first) {
         var n = dates[i].lastIndexOf("/");
         casesArray[i]["date"] = dates[i].substring(0, n);
@@ -161,6 +165,11 @@ function Charts(props) {
   };
 
   function renderLineChart() {
+
+
+    if (test.length === 0) {
+      console.log("boloooooooooo")
+    }
     var width;
     function what() {
       if (graphType === "Line") {
@@ -182,6 +191,10 @@ function Charts(props) {
     }
 
     var TestGraph = what();
+  
+    if (test.message) {
+    return <div>{test.message}</div>
+    }
 
     var current = testing("confirmed");
     var toShow;
@@ -196,7 +209,7 @@ function Charts(props) {
           <TestGraph data={current}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
-            <YAxis />
+            {log}
             <Tooltip />
             <Legend />
 
@@ -262,7 +275,26 @@ function Charts(props) {
       </>
     );
 
-    return <>{dropdown0} </>;
+    return <>{dropdown0} 
+    <select onChange={
+        (e) => {
+         
+          if (e.target.value === "Linear") {
+            setLog(<YAxis />)
+          }
+          else {
+            setLog(<YAxis scale="log" domain={[0.01, 'auto']} allowDataOverflow />)
+
+          }
+        }
+
+      }>
+
+        <option value={"Linear"}> Linear</option>
+        <option value={"Log"}> Log</option>
+
+
+      </select></>;
   }
 
   return loading ? (
@@ -285,14 +317,14 @@ function Charts(props) {
       </div>
     </>
   ) : (
-    <div className="chartsNew">
-      <Header type={search} />
+        <div className="chartsNew">
+          <Header type={search} />
 
-      {isFrom()}
+          {isFrom()}
 
-      {renderLineChart()}
-    </div>
-  );
+          {renderLineChart()}
+        </div>
+      );
 }
 
 export default Charts;

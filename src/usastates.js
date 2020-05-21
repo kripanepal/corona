@@ -3,8 +3,7 @@ import NumberFormat from "react-number-format";
 import Spinner from "react-bootstrap/Spinner";
 import Table from "react-bootstrap/Table";
 import sort from "./sort.png";
-import Popup from "./popup";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 function Main() {
@@ -107,7 +106,7 @@ function Main() {
           <td className="country">
             <span style={{ height: `100%` }}>
               {" "}
-              <Link to={`/USA/state/`+data.state} > {data.state} </Link>
+              <Link className = "link" to={`/USA/state/`+data.state} > {data.state} </Link>
             </span>
           </td>
           <td>

@@ -14,6 +14,14 @@
   height: fit-content + 10px;
   width: 100vw;
 }
+.log
+{
+  text-decoration: underline;
+  color: rgb(142, 168, 69);
+  cursor: pointer;
+
+  
+}
 
 .country {
   text-align: left;

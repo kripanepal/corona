@@ -1,10 +1,8 @@
 import Modal from "react-bootstrap/Modal";
 import React, { useState } from "react";
 import MinChart from "./minChart";
-
 import "./pop.css";
 import './App.css'
-import USACHARTS from './usastatescharts'
 
 function Popup(props) {
   const [show, setShow] = useState(false);

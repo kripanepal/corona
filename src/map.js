@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import GoogleMapReact from "google-map-react";
 import "./map.css";
 import Popup from "./popup";
+
 function Map(props) {
   const [data] = useState(props.data);
   const [loading, setLoading] = useState(true);
-  const key = "KEY HERE";
+  const key =process.env.REACT_APP_GOOGLE_API_KEY
   var [lati, setLeti] = useState();
   var [lngi, setLngi] = useState();
   var [type, setType] = useState("cases");
@@ -33,6 +34,10 @@ function Map(props) {
 
     navigator.geolocation.getCurrentPosition(success, error);
 
+    console.log(
+      "MAP: env key (REACT_APP_GOOGLE_MAPS_API_KEY)=",
+      process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    );
     console.log(lati);
   });
 
@@ -45,7 +50,7 @@ function Map(props) {
         lat={each.countryInfo.lat}
         lng={each.countryInfo.long}
       >
-         <Popup name={each.country} from={"small"} type = "map" />
+        <Popup name={each.country} from={"small"} type="map" />
         <img className="flag" src={each.countryInfo.flag} alt="country image" />
         <br />
         {each[type]}

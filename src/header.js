@@ -11,34 +11,30 @@ function Main(props) {
   let [toShow, setToshow] = useState();
   var search = decodeURI(window.location.pathname.split("/").pop());
 
-
   useEffect(() => {
     var toFetch;
 
     if (props.type === "main") {
       console.log("main");
-      toFetch = "https://corona.lmao.ninja/v2/all";
-      setToshow("World Wide")
-
+      // Using disease.sh v3 for global stats (better maintained API)
+      toFetch = "https://disease.sh/v3/covid-19/all";
+      setToshow("World Wide");
     }
 
     if (window.location.pathname.includes("state")) {
       console.log("satte");
-      toFetch = `https://disease.sh/v2/states/${search}`;
-      setToshow(search)
-
+      toFetch = `https://disease.sh/v3/covid-19/states/${search}`;
+      setToshow(search);
     }
     if (window.location.pathname.includes("country")) {
       console.log("country");
-      toFetch = `https://disease.sh/v2/countries/${search}?yesterday=false&strict=false`;
-      setToshow(search)
-
+      toFetch = `https://disease.sh/v3/covid-19/countries/${search}?yesterday=false&strict=false`;
+      setToshow(search);
     }
     if (window.location.pathname.includes("worldMap")) {
       console.log("country");
-      toFetch = `https://disease.sh/v2/countries/${props.name}?yesterday=false&strict=false`;
-      setToshow(search)
-
+      toFetch = `https://disease.sh/v3/covid-19/countries/${props.name}?yesterday=false&strict=false`;
+      setToshow(search);
     }
     fetch(toFetch)
       .then((res) => res.json())
@@ -47,20 +43,18 @@ function Main(props) {
         console.log("aaaaaaa");
         setLoading(false);
       });
-      
-  }, [props.type,search]);
+  }, [props.type, props.name, search]);
 
   function show() {
-    console.log("herrrrr")
+    console.log("herrrrr");
     if (!latest) {
-      console.log("---------------------")
+      console.log("---------------------");
     }
     const date = new Date(parseInt(latest.updated));
     const lastUpdated = date.toString();
-    console.log(search)
-    if(!latest.recovered)
-    {
-      latest.recovered=0
+    console.log(search);
+    if (!latest.recovered) {
+      latest.recovered = 0;
     }
     const header = (
       <div className="deckss">

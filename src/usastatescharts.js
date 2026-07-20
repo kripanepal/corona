@@ -8,7 +8,6 @@ import {
   LineChart,
   Bar,
   BarChart,
-  Pie,
   PieChart,
   Area,
   AreaChart,
@@ -32,10 +31,9 @@ function USACharts(props) {
   var lastDate;
 
   useEffect(() => {
-    fetch(
-      `https://corona.lmao.ninja/v2/nyt/states`,
-      { headers: { accept: "Accept: application/json" } }
-    )
+    fetch(`https://disease.sh/v3/covid-19/states`, {
+      headers: { accept: "Accept: application/json" },
+    })
       .then((res) => res.json())
       .then((data) => {
         setTest(data);
@@ -52,7 +50,6 @@ function USACharts(props) {
 
       if (e["state"] === currentGraph) {
         lastDate = e["date"];
-       
       }
       return e["state"] === currentGraph;
     });
@@ -70,9 +67,8 @@ function USACharts(props) {
   function returnLines(type) {
     var temp;
     var color = "red";
-    if(type==='cases')
-    {
-      color = 'blue'
+    if (type === "cases") {
+      color = "blue";
     }
     function what() {
       if (graphType === "Line") {
@@ -94,18 +90,10 @@ function USACharts(props) {
 
     var TestGraph = what();
 
-    temp = (
-      <TestGraph
-        dataKey={type}
-        stroke={color}
-        fill={color}
-        dot={false}
-      />
-    );
+    temp = <TestGraph dataKey={type} stroke={color} fill={color} dot={false} />;
 
     return temp;
   }
-
 
   function renderLineChart() {
     var width;

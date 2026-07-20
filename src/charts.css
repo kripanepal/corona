@@ -1,54 +1,196 @@
-.graphCountry
-{
-    color: rgb(206, 87, 87);
- 
-    
+.graphCountry {
+  color: rgb(206, 87, 87);
 }
 
-.graphMessage
-{
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+.graphMessage {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  color: #64748b;
+  margin-top: 12px;
+  font-size: 0.95rem;
 }
 
-.displayedList:hover
-{
-    color: red;
-    text-decoration: line-through;
-    cursor: pointer;
-    
-   
+.graphs {
+  padding: 20px 16px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.06);
 }
 
-
-.displayedList{
-    font-weight: 600;
-    background-color: khaki;
+.chartCard {
+  margin: 16px 0 24px;
 }
 
-.cover
-{
-    border: cadetblue 2px solid;
-    max-width: fit-content;
-    margin-left: 5vw;
-    padding-right: 20px;
-  
+.graphHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
 }
 
-.selectList
-{
-    width: 150px;
+.graphHeader h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 1.15rem;
+}
 
+.graphBadge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.displayedList:hover {
+  color: red;
+  text-decoration: line-through;
+  cursor: pointer;
+}
+
+.displayedList {
+  font-weight: 600;
+  background-color: khaki;
+}
+
+.cover {
+  border: cadetblue 2px solid;
+  max-width: fit-content;
+  margin-left: 5vw;
+  padding-right: 20px;
+}
+
+.selectList {
+  width: 150px;
 }
 
 .chartHeat {
-    display: flex;
-    flex-direction: column;
-  }
-  
- h3 {
-    margin-left: 33vw;
-   
-  }
+  display: flex;
+  flex-direction: column;
+}
 
+.controlsShell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 8px 0 20px;
+}
+
+.controlsCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.controlsCardWide {
+  flex: 1 1 320px;
+}
+
+.controlsHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.controlsTitle {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.controlsHint {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.controlsForm {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 120px;
+}
+
+.controlGroupInline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.controlLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.controlSelect,
+.controlInput,
+.controlButton {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 0.92rem;
+  background: #fff;
+  color: #0f172a;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.controlSelect:focus,
+.controlInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.controlButton {
+  cursor: pointer;
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  color: #fff;
+  border: none;
+  font-weight: 600;
+  min-width: 88px;
+}
+
+.controlButton:hover {
+  transform: translateY(-1px);
+}
+
+.country-select__control {
+  border-radius: 12px !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+.country-select__control:hover {
+  border-color: #94a3b8 !important;
+}
+
+.country-select__control--is-focused {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+
+.country-select__menu {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+h3 {
+  margin-left: 33vw;
+}

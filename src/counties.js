@@ -15,7 +15,7 @@ function Main() {
   var searching = decodeURI(window.location.pathname.split("/").pop() + "");
 
   useEffect(() => {
-    fetch("https://disease.sh/v2/jhucsse/counties", {
+    fetch("https://disease.sh/v3/covid-19/jhucsse/counties", {
       headers: { accept: "Accept: application/json" },
     })
       .then((res) => res.json())
@@ -24,19 +24,15 @@ function Main() {
         setLoading(false);
 
         const tolook = data.filter((each) => {
-
           return each.province === searching;
         });
 
         setResults(tolook);
         setLatest(tolook);
-
-        
       });
   }, [searching]);
 
   function handleSearch(event) {
-
     const filtered = latest.filter((each) => {
       return each.county
         .toUpperCase()
@@ -63,7 +59,6 @@ function Main() {
   }
 
   function handleChange(col) {
-
     function compare(a, b) {
       var bandA;
       var bandB;
@@ -74,8 +69,6 @@ function Main() {
         bandA = a[col];
         bandB = b[col];
       }
-
-
 
       if (type !== "asc") {
         let comparison = 0;
@@ -105,17 +98,18 @@ function Main() {
   }
 
   function countries() {
-
     if (results.length === 0) {
-        return <tr>
-            <td  colSpan="4">No Data Available</td>
+      return (
+        <tr>
+          <td colSpan="4">No Data Available</td>
         </tr>
-      }
+      );
+    }
     const counties = results.map((data, i) => {
       return (
         <tr key={i}>
           <td className="county">
-            <span className = "link"style={{ height: `100%` }}>
+            <span className="link" style={{ height: `100%` }}>
               {" "}
               <Popup name={data.county} type="state" from={"small"} />
             </span>
@@ -152,7 +146,7 @@ function Main() {
   function table() {
     const table = (
       <>
-      <br/>
+        <br />
         <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
           <label>
             Search:

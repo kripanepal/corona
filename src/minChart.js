@@ -9,7 +9,6 @@ import {
   LineChart,
   Bar,
   BarChart,
-  
   PieChart,
   Area,
   AreaChart,
@@ -25,9 +24,10 @@ import {
 
 function Charts(props) {
   const [loading, setLoading] = useState(true);
-  const [log, setLog] = useState(<YAxis/>);
+  const [log, setLog] = useState(<YAxis />);
 
-  const [numDays, setNumdays] = useState(30);
+  const [lastDays, setLastDays] = useState(30);
+  const [requestedLastDays, setRequestedLastDays] = useState(30);
 
   const [graphType, setGraphType] = useState("Line");
   const [test, setTest] = useState([]);
@@ -36,81 +36,119 @@ function Charts(props) {
   var search = decodeURI(window.location.pathname.split("/").pop());
 
   useEffect(() => {
-    var toFetch = `https://disease.sh/v2/historical/${search}?lastdays=${numDays}`;
+    let toFetch = `https://disease.sh/v3/covid-19/historical/${search}?lastdays=${requestedLastDays}`;
     if (window.location.pathname.includes("state")) {
-      var temp = search.toLowerCase()
-      toFetch = `https://disease.sh/v2/historical/usacounties/${temp}`;
+      toFetch = `https://disease.sh/v3/covid-19/historical/usacounties/${search.toLowerCase()}`;
     }
-   
+
     if (window.location.pathname.includes("worldMap")) {
-      var temp = search.toLowerCase()
-      var toFetch = `https://disease.sh/v2/historical/${props.name}?lastdays=${numDays}`;
+      toFetch = `https://disease.sh/v3/covid-19/historical/${props.name}`;
     }
+
     fetch(toFetch)
       .then((res) => res.json())
       .then((data) => {
         if (window.location.pathname.includes("state")) {
-          var here = data;
-          var temp = here.filter((each) => {
-            var a = (props.name) + ""
-            var b = (each.county) + ""
+          const here = data;
+          const filtered = here.filter((each) => {
+            const a = props.name + "";
+            const b = each.county + "";
 
-            return (a.toUpperCase() === b.toUpperCase());
+            return a.toUpperCase() === b.toUpperCase();
           });
-          console.log(temp);
-          setTest(temp);
-
+          setTest(filtered);
         } else {
           setTest(data);
         }
         setLoading(false);
-      })
-
+      });
 
     // eslint-disable-next-line
-  }, [numDays]);
+  }, [requestedLastDays]);
+
+  function normalizeDate(value) {
+    if (!value) {
+      return "";
+    }
+
+    const trimmed = value.trim();
+    const normalized = trimmed.includes("/")
+      ? trimmed
+      : new Date(trimmed).toLocaleDateString("en-US");
+
+    return normalized;
+  }
+
+  function getDateRange(startDate, endDate) {
+    const dates = [];
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    const current = new Date(start);
+    while (current <= end) {
+      const month = String(current.getMonth() + 1).padStart(2, "0");
+      const day = String(current.getDate()).padStart(2, "0");
+      const year = current.getFullYear();
+      dates.push(`${month}/${day}/${String(year).slice(-2)}`);
+      current.setDate(current.getDate() + 1);
+    }
+
+    return dates;
+  }
 
   function testing(needed) {
-    var casesArray = [];
+    if (!test || (Array.isArray(test) && test.length === 0)) {
+      return [];
+    }
 
-    var first = "true";
-
-    var historyData = { ...test.timeline };
+    let historyData = test.timeline;
     if (window.location.pathname.includes("state")) {
-      historyData = test[0].timeline;
+      historyData = test[0]?.timeline;
     }
 
-   
-
-    var dates = Object.keys(historyData.cases);
-    var cases = Object.values(historyData.cases);
-    var deaths = Object.values(historyData.deaths);
-    if (!window.location.pathname.includes("state")) {
-      var recovered = Object.values(historyData.recovered);
+    if (!historyData || !historyData.cases) {
+      return [];
     }
 
-    for (var i = 0; i < dates.length; i++) {
-      if (casesArray.length < cases.length) {
-        casesArray.push({});
-      }
+    const dates = Object.keys(historyData.cases);
+    const normalizedDates = dates.map((date) => normalizeDate(date));
+    const dateLookup = new Map(
+      normalizedDates.map((date, index) => [date, dates[index]]),
+    );
+
+    const availableDateValues = normalizedDates;
+    const firstDate = availableDateValues[0];
+    lastDate = availableDateValues[availableDateValues.length - 1];
+    const rangeStart = new Date(lastDate);
+    rangeStart.setDate(
+      rangeStart.getDate() - Math.max(1, requestedLastDays) + 1,
+    );
+    const fullRange =
+      firstDate && lastDate
+        ? getDateRange(rangeStart, new Date(lastDate))
+        : availableDateValues;
+
+    const chartData = fullRange.map((dateLabel) => {
+      const sourceDate = dateLookup.get(dateLabel) || null;
+      const casesValue = sourceDate ? historyData.cases[sourceDate] : 0;
+      const deathsValue = sourceDate ? historyData.deaths[sourceDate] : 0;
+      const recoveredValue = sourceDate ? historyData.recovered[sourceDate] : 0;
+
+      return {
+        date: dateLabel,
+        confirmed: casesValue || 0,
+        deaths: deathsValue || 0,
+        recovered: window.location.pathname.includes("state")
+          ? undefined
+          : recoveredValue || 0,
+      };
+    });
+
+    if (chartData.length > 0) {
+      lastDate = chartData[chartData.length - 1].date;
     }
 
-    for (let i = 0; i < dates.length; i++) {
-      if (first) {
-        var n = dates[i].lastIndexOf("/");
-        casesArray[i]["date"] = dates[i].substring(0, n);
-        lastDate = dates[i];
-      }
-
-      casesArray[i]["confirmed"] = cases[i];
-      casesArray[i]["deaths"] = deaths[i];
-      if (!window.location.pathname.includes("state")) {
-        casesArray[i]["recovered"] = recovered[i];
-      }
-    }
-    first = false;
-
-    return casesArray;
+    return chartData;
   }
 
   function showFoot() {
@@ -124,37 +162,60 @@ function Charts(props) {
   }
 
   function returnLines(str) {
-    var temp;
-    function what() {
-      if (graphType === "Line") {
-        return Line;
-      }
+    const color = stringToColour(str);
 
-      if (graphType === "Bar") {
-        return Bar;
-      }
-
-      if (graphType === "Area") {
-        return Area;
-      }
-
-      if (graphType === "AreaLineComposed") {
-        return;
-      }
+    if (graphType === "Line") {
+      return (
+        <Line
+          dataKey={str}
+          stroke={color}
+          fill={color}
+          type="monotone"
+          strokeWidth={2.5}
+          dot={false}
+          activeDot={{ r: 5, strokeWidth: 2, fill: color, stroke: "#ffffff" }}
+        />
+      );
     }
 
-    var TestGraph = what();
+    if (graphType === "Bar") {
+      return (
+        <Bar
+          dataKey={str}
+          stroke={color}
+          fill={color}
+          radius={[4, 4, 0, 0]}
+          barSize={24}
+        />
+      );
+    }
 
-    temp = (
-      <TestGraph
+    if (graphType === "Area") {
+      return (
+        <Area
+          dataKey={str}
+          stroke={color}
+          fill={color}
+          type="monotone"
+          strokeWidth={2.5}
+          fillOpacity={0.18}
+          dot={false}
+          activeDot={{ r: 5, strokeWidth: 2, fill: color, stroke: "#ffffff" }}
+        />
+      );
+    }
+
+    return (
+      <Line
         dataKey={str}
-        stroke={stringToColour(str)}
-        fill={stringToColour(str)}
+        stroke={color}
+        fill={color}
+        type="monotone"
+        strokeWidth={2.5}
         dot={false}
+        activeDot={{ r: 5, strokeWidth: 2, fill: color, stroke: "#ffffff" }}
       />
     );
-
-    return temp;
   }
 
   var stringToColour = function (str) {
@@ -170,10 +231,8 @@ function Charts(props) {
   };
 
   function renderLineChart() {
-
-
     if (test.length === 0) {
-      console.log("boloooooooooo")
+      console.log("boloooooooooo");
     }
     var width;
     function what() {
@@ -196,9 +255,9 @@ function Charts(props) {
     }
 
     var TestGraph = what();
-  
+
     if (test.message) {
-    return <div>{test.message}</div>
+      return <div>{test.message}</div>;
     }
 
     var current = testing("confirmed");
@@ -208,15 +267,35 @@ function Charts(props) {
     }
 
     return (
-      <div className="graphs">
-        <br />
+      <div className="graphs chartCard">
+        <div className="graphHeader">
+          <h3>{toShow || "COVID timeline"}</h3>
+          <span className="graphBadge">Live trend</span>
+        </div>
         <ResponsiveContainer width={width} height={400}>
           <TestGraph data={current}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
+            <CartesianGrid
+              stroke="#e2e8f0"
+              strokeDasharray="4 4"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fill: "#64748b", fontSize: 12 }}
+            />
             {log}
-            <Tooltip />
-            <Legend />
+            <Tooltip
+              contentStyle={{
+                borderRadius: 12,
+                border: "1px solid #e2e8f0",
+                boxShadow: "0 10px 30px rgba(15, 23, 42, 0.08)",
+              }}
+              labelStyle={{ color: "#0f172a" }}
+              formatter={(value) => [Number(value).toLocaleString(), "Cases"]}
+            />
+            <Legend verticalAlign="bottom" height={36} iconType="circle" />
 
             {returnLines("confirmed")}
             {returnLines("deaths")}
@@ -232,23 +311,36 @@ function Charts(props) {
     );
   }
 
-  function changeDays(event) {
-    setNumdays(event.target.value);
+  function changeLastDays(event) {
+    setLastDays(event.target.value);
+  }
+
+  function handleSearch() {
+    setRequestedLastDays(lastDays);
   }
 
   function isFrom() {
     if (!window.location.pathname.includes("state")) {
       return (
         <>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+          >
+            <label style={{ marginRight: 4 }}>Last days</label>
             <input
               type="number"
-              min="0"
+              min="1"
               max="200"
-              placeholder={"30 days"}
-              style={{ width: 72 }}
-              onChange={changeDays}
+              value={lastDays}
+              onChange={changeLastDays}
+              style={{ width: 90, marginRight: 8 }}
             />{" "}
+            <button type="submit" style={{ marginLeft: 8 }}>
+              Search
+            </button>{" "}
             {displayGraphMenu()}
           </form>
         </>
@@ -280,26 +372,25 @@ function Charts(props) {
       </>
     );
 
-    return <>{dropdown0} 
-    <select onChange={
-        (e) => {
-         
-          if (e.target.value === "Linear") {
-            setLog(<YAxis />)
-          }
-          else {
-            setLog(<YAxis scale="log" domain={[0.01, 'auto']} allowDataOverflow />)
-
-          }
-        }
-
-      }>
-
-        <option value={"Linear"}> Linear</option>
-        <option value={"Log"}> Log</option>
-
-
-      </select></>;
+    return (
+      <>
+        {dropdown0}
+        <select
+          onChange={(e) => {
+            if (e.target.value === "Linear") {
+              setLog(<YAxis />);
+            } else {
+              setLog(
+                <YAxis scale="log" domain={[0.01, "auto"]} allowDataOverflow />,
+              );
+            }
+          }}
+        >
+          <option value={"Linear"}> Linear</option>
+          <option value={"Log"}> Log</option>
+        </select>
+      </>
+    );
   }
 
   return loading ? (
@@ -322,14 +413,14 @@ function Charts(props) {
       </div>
     </>
   ) : (
-        <div className="chartsNew">
-          <Header type={search} name = {props.name} />
+    <div className="chartsNew">
+      <Header type={search} name={props.name} />
 
-          {isFrom()}
+      {isFrom()}
 
-          {renderLineChart()}
-        </div>
-      );
+      {renderLineChart()}
+    </div>
+  );
 }
 
 export default Charts;

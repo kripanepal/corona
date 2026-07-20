@@ -12,6 +12,7 @@
     "chart.js": "^2.9.3",
     "cors": "^2.8.5",
     "cors-anywhere": "^0.4.3",
+    "dotenv": "^17.4.2",
     "google-map-react": "^1.1.7",
     "loadash": "^1.0.0",
     "lodash": "^4.17.15",
@@ -36,7 +37,7 @@
     "recharts": "^1.8.5"
   },
   "scripts": {
-   "start": "set HTTPS=true&&react-scripts start ",
+    "start": "set HTTPS=true&&react-scripts start ",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",

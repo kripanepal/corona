@@ -5,7 +5,6 @@ import Table from "react-bootstrap/Table";
 import sort from "./sort.png";
 import { Link } from "react-router-dom";
 
-
 function Main() {
   let [latest, setLatest] = useState([]);
   let [results, setResults] = useState([]);
@@ -13,15 +12,14 @@ function Main() {
   var [search, setSearch] = useState("");
   const [type, setType] = useState("desc");
   useEffect(() => {
-    fetch(
-      "https://corona.lmao.ninja/v2/states?sort=cases",
-      { headers: { accept: "Accept: application/json" } }
-    )
+    fetch("https://disease.sh/v3/covid-19/states?sort=cases", {
+      headers: { accept: "Accept: application/json" },
+    })
       .then((res) => res.json())
       .then((data) => {
         setLatest(data);
         setResults(data);
-        console.log('aa')
+        console.log("aa");
         setLoading(false);
       });
   }, []);
@@ -106,7 +104,10 @@ function Main() {
           <td className="country">
             <span style={{ height: `100%` }}>
               {" "}
-              <Link className = "link" to={`/USA/state/`+data.state} > {data.state} </Link>
+              <Link className="link" to={`/USA/state/` + data.state}>
+                {" "}
+                {data.state}{" "}
+              </Link>
             </span>
           </td>
           <td>
@@ -128,8 +129,6 @@ function Main() {
           </td>
 
           <td className="datas">
-            
-
             <NumberFormat
               value={data.deaths}
               displayType={"text"}
@@ -179,7 +178,7 @@ function Main() {
   function table() {
     const table = (
       <>
-       <br/>
+        <br />
         <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
           <label>
             Search:

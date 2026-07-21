@@ -6,7 +6,7 @@ import Popup from "./popup";
 function Map(props) {
   const [data] = useState(props.data);
   const [loading, setLoading] = useState(true);
-  const key =process.env.REACT_APP_GOOGLE_API_KEY
+  const key = process.env.REACT_APP_GOOGLE_API_KEY;
   var [lati, setLeti] = useState();
   var [lngi, setLngi] = useState();
   var [type, setType] = useState("cases");
@@ -51,7 +51,11 @@ function Map(props) {
         lng={each.countryInfo.long}
       >
         <Popup name={each.country} from={"small"} type="map" />
-        <img className="flag" src={each.countryInfo.flag} alt="country image" />
+        <img
+          className="flag"
+          src={each.countryInfo.flag}
+          alt={`Flag of ${each.country}`}
+        />
         <br />
         {each[type]}
       </div>

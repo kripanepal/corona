@@ -6,7 +6,6 @@ import sort from "./sort.png";
 import NumberFormat from "react-number-format";
 import MinCharts from "./minChart";
 import Charts from "./Charts";
-import "react-tabs/style/react-tabs.css";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 import Counties from "./counties";
@@ -23,8 +22,6 @@ function App(props) {
   const [pathTo, setPathTo] = useState();
 
   const [url] = useState(props.name);
-
-  
 
   useEffect(() => {
     fetch("" + url + "?sort=cases", {
@@ -59,7 +56,8 @@ function App(props) {
           <td className="country">
             <span style={{ height: `100%` }}>
               <img src={data.countryInfo.flag} alt="flag" width="20px" />{" "}
-              <Link className = "link"
+              <Link
+                className="link"
                 to={`country/${data.country}`}
                 onClick={() => {
                   setPathTo(data.country);
@@ -161,12 +159,10 @@ function App(props) {
   }
 
   function handleChange(col) {
-    
     function compare(a, b) {
-      
       const bandA = a[col];
       const bandB = b[col];
-      console.log(bandA)
+      console.log(bandA);
       if (type !== "asc") {
         let comparison = 0;
         if (bandA > bandB) {
@@ -198,7 +194,7 @@ function App(props) {
     setSearch(event.target.value);
 
     const filtered = finalResults.filter((each) =>
-      each.country.toUpperCase().startsWith(event.target.value.toUpperCase())
+      each.country.toUpperCase().startsWith(event.target.value.toUpperCase()),
     );
     setResults(filtered);
   }
@@ -222,7 +218,7 @@ function App(props) {
   function table() {
     const table = (
       <>
-      <Header type = "main"/>
+        <Header type="main" />
         <form onSubmit={submitHandler} style={{ textAlign: "center" }}>
           <label>
             Search:
@@ -370,20 +366,23 @@ function App(props) {
 
   function tabs() {
     const tabs = (
-     
-      
-        <>
-            <Button variant="primary"><Link  className = "links" to = "/">All countries </Link> </Button>{' '}
-     
-    
-            <Button variant="success"><Link className = "links" to = "/worldMap">World Map </Link></Button>{' '}
-
-           
-            <Button variant="info"><Link className = "links"  to = "/graphs">Graphs </Link></Button>{' '}
-         
-</>
-     
-     
+      <>
+        <Button variant="primary">
+          <Link className="links" to="/">
+            All countries{" "}
+          </Link>{" "}
+        </Button>{" "}
+        <Button variant="success">
+          <Link className="links" to="/worldMap">
+            World Map{" "}
+          </Link>
+        </Button>{" "}
+        <Button variant="info">
+          <Link className="links" to="/graphs">
+            Graphs{" "}
+          </Link>
+        </Button>{" "}
+      </>
     );
     return tabs;
   }
@@ -406,16 +405,27 @@ function App(props) {
         <div>
           {tabs()}
           <Switch>
-            <Route path="/" exact>  {table()}</Route>
-            <Route path="/worldMap" exact>  <Map data={results} /></Route>
-            <Route path="/graphs" exact>  <Charts/></Route>
-            <Route path="/country/:name" ><MinCharts name = {pathTo} from = "small"/> </Route>
-            <Route path="/USA/:name" ><Counties/> </Route>
-
+            <Route path="/" exact>
+              {" "}
+              {table()}
+            </Route>
+            <Route path="/worldMap" exact>
+              {" "}
+              <Map data={results} />
+            </Route>
+            <Route path="/graphs" exact>
+              {" "}
+              <Charts />
+            </Route>
+            <Route path="/country/:name">
+              <MinCharts name={pathTo} from="small" />{" "}
+            </Route>
+            <Route path="/USA/:name">
+              <Counties />{" "}
+            </Route>
           </Switch>
         </div>
       </Router>
-    
     </div>
   );
 }

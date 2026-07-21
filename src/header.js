@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import CardDeck from "react-bootstrap/CardDeck";
 import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.min.css";
 import NumberFormat from "react-countup";
 import Spinner from "react-bootstrap/Spinner";
@@ -59,65 +60,71 @@ function Main(props) {
     const header = (
       <div className="deckss">
         <span className="worldWide">{toShow}</span>
-        <CardDeck className="deck">
-          <Card
-            bg={"secondary"}
-            text={"white"}
-            className="text-center"
-            style={{ marginLeft: 3 }}
-          >
-            <Card.Body>
-              <Card.Title>Cases</Card.Title>
-              <Card.Text>
-                <NumberFormat
-                  end={latest.cases}
-                  duration={1.5}
-                  separator={","}
-                />
-              </Card.Text>
-            </Card.Body>
-            <Card.Footer>
-              <small>Last updated: {lastUpdated}</small>
-            </Card.Footer>
-          </Card>
-          <Card bg={"danger"} text={"white"} className="text-center" style={{}}>
-            <Card.Body>
-              <Card.Title>Deaths</Card.Title>
-              <Card.Text>
-                {" "}
-                <NumberFormat
-                  end={latest.deaths}
-                  duration={1.5}
-                  separator={","}
-                />
-              </Card.Text>
-            </Card.Body>
-            <Card.Footer>
-              <small>Last updated: {lastUpdated}</small>
-            </Card.Footer>
-          </Card>
-          <Card
-            bg={"success"}
-            text={"white"}
-            className="text-center"
-            style={{}}
-          >
-            <Card.Body>
-              <Card.Title>Recovered</Card.Title>
-              <Card.Text>
-                {" "}
-                <NumberFormat
-                  end={latest.recovered}
-                  duration={1.5}
-                  separator={","}
-                />
-              </Card.Text>
-            </Card.Body>
-            <Card.Footer>
-              <small>Last updated: {lastUpdated}</small>
-            </Card.Footer>
-          </Card>
-        </CardDeck>
+        <Row className="deck">
+          <Col md={4} className="mb-3">
+            <Card bg={"secondary"} text={"white"} className="text-center">
+              <Card.Body>
+                <Card.Title>Cases</Card.Title>
+                <Card.Text>
+                  <NumberFormat
+                    end={latest.cases}
+                    duration={1.5}
+                    separator={","}
+                  />
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer>
+                <small>Last updated: {lastUpdated}</small>
+              </Card.Footer>
+            </Card>
+          </Col>
+          <Col md={4} className="mb-3">
+            <Card
+              bg={"danger"}
+              text={"white"}
+              className="text-center"
+              style={{}}
+            >
+              <Card.Body>
+                <Card.Title>Deaths</Card.Title>
+                <Card.Text>
+                  {" "}
+                  <NumberFormat
+                    end={latest.deaths}
+                    duration={1.5}
+                    separator={","}
+                  />
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer>
+                <small>Last updated: {lastUpdated}</small>
+              </Card.Footer>
+            </Card>
+          </Col>
+          <Col md={4} className="mb-3">
+            <Card
+              bg={"success"}
+              text={"white"}
+              className="text-center"
+              style={{}}
+            >
+              <Card.Body>
+                <Card.Title>Recovered</Card.Title>
+                <Card.Text>
+                  {" "}
+                  <NumberFormat
+                    end={latest.recovered}
+                    duration={1.5}
+                    separator={","}
+                  />
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer>
+                <small>Last updated: {lastUpdated}</small>
+              </Card.Footer>
+            </Card>
+          </Col>
+        </Row>
       </div>
     );
 

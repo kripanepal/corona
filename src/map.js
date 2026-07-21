@@ -6,7 +6,7 @@ import Popup from "./popup";
 function Map(props) {
   const [data] = useState(props.data);
   const [loading, setLoading] = useState(true);
-  const key = process.env.REACT_APP_GOOGLE_API_KEY;
+  const [mapKey, setMapKey] = useState("");
   var [lati, setLeti] = useState();
   var [lngi, setLngi] = useState();
   var [type, setType] = useState("cases");
@@ -14,8 +14,6 @@ function Map(props) {
   useEffect(() => {
     function success(pos) {
       var crd = pos.coords;
-
-      console.log(`Longitude: ${crd.longitude}`);
 
       setLeti(crd.latitude);
       setLngi(crd.longitude);
@@ -33,13 +31,29 @@ function Map(props) {
     }
 
     navigator.geolocation.getCurrentPosition(success, error);
+  }, []);
 
-    console.log(
-      "MAP: env key (REACT_APP_GOOGLE_MAPS_API_KEY)=",
-      process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    );
-    console.log(lati);
-  });
+  useEffect(() => {
+    async function fetchMapKey() {
+      try {
+        const response = await fetch("/.netlify/functions/google-maps-key");
+
+        if (!response.ok) {
+          throw new Error("Unable to load Google Maps key");
+        }
+
+        const payload = await response.json();
+
+        if (payload.key) {
+          setMapKey(payload.key);
+        }
+      } catch (error) {
+        console.error("Failed to load map key", error);
+      }
+    }
+
+    fetchMapKey();
+  }, []);
 
   var center = { lat: lati, lng: lngi };
   var countyMap = data.map((each) => {
@@ -87,14 +101,14 @@ function Map(props) {
   function handleChange(e) {
     setType(e.target.value);
   }
-  if (!loading) {
+  if (!loading && mapKey) {
     return (
       <>
         <div>
           {form}
           <div style={{ height: "100vh", width: "100%" }}>
             <GoogleMapReact
-              bootstrapURLKeys={{ key: key }}
+              bootstrapURLKeys={{ key: mapKey }}
               defaultCenter={center}
               defaultZoom={4}
             >
